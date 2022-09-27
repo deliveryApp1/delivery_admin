@@ -18,9 +18,20 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": "src",
+    "paths": {
+      "types/*": ["types/*"],
+      "services/*": ["services/*"],
+      "assets/*": ["assets/*"],
+      "utils/*": ["utils/*"],
+      "hooks/*": ["hooks/*"],
+      "store/*": ["store/*"],
+      "pages/*": ["pages/*"],
+      "constants/*": ["constants/*"],
+      "components/*": ["components/*"]
+    }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["**/*.ts", "**/*.tsx", "plopfile.ts"],
+  "exclude": ["node_modules"]
 }
