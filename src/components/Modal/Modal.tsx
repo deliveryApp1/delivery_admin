@@ -1,12 +1,10 @@
-import { FC } from 'react';
-import { Modal as AntModal, ModalProps, Button } from 'antd';
+import { FC } from "react";
+import { Modal as AntModal, ModalProps, Button, Row, Col } from "antd";
 import { CloseCircleOutlined } from "@ant-design/icons";
-
-
 
 type Props = ModalProps & {
   title: string;
-  buttonText: string;
+  buttonText?: string;
   onSubmit?: () => void;
   isLoading?: boolean;
   isDisabled?: boolean;
@@ -24,9 +22,16 @@ const Modal: FC<Props> = ({
       centered
       footer={
         buttonText ? (
-          <Button htmlType="submit" onClick={onSubmit}>
-            {buttonText}
-          </Button>
+          <Row justify="end" gutter={10} wrap={false}>
+            <Col>
+            <Button htmlType="submit" onClick={onSubmit}>
+             Tasdiqlash
+            </Button>
+            </Col>
+            <Col>
+            <Button>Bekor qilish</Button>
+            </Col>
+          </Row>
         ) : null
       }
       closeIcon={<CloseCircleOutlined />}

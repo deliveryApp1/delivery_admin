@@ -1,43 +1,51 @@
 import { HomeOutlined, ShopOutlined } from "@ant-design/icons";
-import { Layout as AntdLayout } from "antd";
+import { Col, Layout as AntdLayout, Row } from "antd";
 import React, { ReactNode, useMemo, useState } from "react";
-import { SideBar, Header } from "..";
-import { Link } from "react-router-dom";
+import { SideBar, Header ,NavLink } from "..";
 
 const { Content } = AntdLayout;
 
 export type LinksType = {
   key: string;
-  icon: ReactNode;
-  label: string;
+  item: ReactNode;
 };
 
 type Props = {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
-const Layout: React.FC<Props> = ({children}) => {
+const Layout: React.FC<Props> = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
+
+
 
   const links: LinksType[] = useMemo(
     () => [
       {
         key: "1",
-        icon: (
-          <Link to={"/"}>
-            <HomeOutlined />
-          </Link>
+        item: (
+          <NavLink to={"/"}>
+            <Row align="middle" wrap={false} gutter={20}>
+              <Col>
+                <HomeOutlined />
+              </Col>
+              <Col>Home</Col>
+            </Row>
+          </NavLink>
         ),
-        label: "Home",
       },
       {
         key: "2",
-        icon: (
-          <Link to={"/category"}>
-            <ShopOutlined />
-          </Link>
+        item: (
+          <NavLink to={"/category"}>
+            <Row align="middle" wrap={false} gutter={20}>
+              <Col>
+                <ShopOutlined />
+              </Col>
+              <Col>Kategoriya</Col>
+            </Row>
+          </NavLink>
         ),
-        label: "Categoriya",
       },
     ],
     []
@@ -46,12 +54,10 @@ const Layout: React.FC<Props> = ({children}) => {
   return (
     <AntdLayout style={{ height: "100vh" }}>
       <SideBar links={links} collapsed={collapsed} />
-      <AntdLayout className="site-layout">
+      <AntdLayout>
         <Header collapsed={collapsed} setCollapsed={setCollapsed} />
         <Content
-          className="site-layout-background"
           style={{
-            margin: "24px 16px",
             padding: 24,
           }}
         >

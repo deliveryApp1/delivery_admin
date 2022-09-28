@@ -1,3 +1,6 @@
 export type CategoryDTO = {
-  id: number;
+  id?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  name: string;
 };

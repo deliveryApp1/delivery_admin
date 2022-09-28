@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Input as AntdInput, InputProps } from "antd";
 
 export type Props = InputProps & {
@@ -14,7 +14,7 @@ const Input: FC<Props> = ({ type, prefix, ...props }) => {
   if (type === "password") {
     return <Password {...props} prefix={prefix} />;
   } else {
-    return <AntdInput {...props} prefix={prefix} />;
+    return <AntdInput  {...props} prefix={prefix} />;
   }
 };
 
