@@ -52,7 +52,7 @@ const Layout: React.FC<Props> = ({ children }) => {
   );
 
   return (
-    <AntdLayout style={{ height: "100vh" }}>
+    <AntdLayout style={{ height: "100vh" , overflow: 'hidden' }}>
       <SideBar links={links} collapsed={collapsed} />
       <AntdLayout>
         <Header collapsed={collapsed} setCollapsed={setCollapsed} />

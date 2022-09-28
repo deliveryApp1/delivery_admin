@@ -4,6 +4,7 @@ import { CategoryDTO } from "types";
 
 export type GetCategoryType = {
   data: CategoryDTO[];
+  statusCode: number
 };
 export const categoryApi = createApi({
   refetchOnReconnect: true,
@@ -24,7 +25,7 @@ export const categoryApi = createApi({
 
     // Mutations
 
-    categoryAdd: builder.mutation<Pick<CategoryDTO, "name">, { name: string }>({
+    categoryAdd: builder.mutation<GetCategoryType, { name: string }>({
       query: (data) => ({
         url: "/category",
         method: "POST",

@@ -1,6 +1,7 @@
-import { Button, Col, Form, Row } from "antd";
+import { Button, Col, Form, message, Row } from "antd";
 import { FormElements, Modal as AntdModal } from "components/index";
 import { useCategoryAddMutation } from "store/endpoints";
+import { CategoryDTO } from "types/category";
 
 type Props = {
   visible: boolean;
@@ -8,17 +9,21 @@ type Props = {
   handleOk?: () => void;
 };
 const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk }) => {
-  
+  const [form] = Form.useForm();
   const [categoryMutation, { isLoading }] = useCategoryAddMutation();
-  const handleSubmit = (value: any) => {
+
+  const handleSubmit = (value: CategoryDTO) => {
     const categoryPromise = categoryMutation(value).unwrap();
     categoryPromise
       .then((res) => {
-        setVisible(false);
-        console.log(res);
+        if (res.statusCode === 200) {
+          message.success("Muvaffaqiyati yaratildi.");
+          setVisible(false);
+          form.resetFields();
+        }
       })
       .catch((err) => {
-        console.log(err);
+        message.error(`Xatolik yuz berdi. Xatolik: ${err.message}`);
       });
   };
 
@@ -28,9 +33,9 @@ const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk }) => {
         title={"Kategoriya yaratish"}
         open={visible}
         onOk={handleOk}
-        onCancel={() => setVisible(false)}
-      >
+        onCancel={() => setVisible(false)}         >
         <Form
+          form={form}
           name="basic"
           layout="vertical"
           onFinish={handleSubmit} // onFinishFailed={onFinishFailed}
@@ -48,10 +53,17 @@ const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk }) => {
           <Form.Item style={{ marginTop: 50 }}>
             <Row justify="end" gutter={5} wrap={false}>
               <Col>
-                <Button onClick={() => setVisible(false)}>Bekor qilish</Button>
+                <Button onClick={() => setVisible(false)} disabled={isLoading}>
+                  Bekor qilish
+                </Button>
               </Col>
               <Col>
-                <Button htmlType="submit" disabled={isLoading}>
+                <Button
+                  htmlType="submit"
+                  loading={isLoading}
+                  disabled={isLoading}
+                  type="primary" 
+                >
                   Tasdiqlash
                 </Button>
               </Col>

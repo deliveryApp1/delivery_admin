@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Button, Col, Row, TableColumnsType } from "antd";
+import { Button, Col, message, Row, TableColumnsType } from "antd";
 import { Typography } from "antd";
-import { Table } from "components/index";
+import { PopConfirm, Table } from "components/index";
 import ModalCreate from "./_components/ModalCreate/ModalCreate";
 import { CategoryDTO } from "types/category";
 import ModalUpdate from "./_components/ModalUpdate/ModalUpdate";
@@ -22,11 +22,13 @@ const Category: React.FC = () => {
     const category = categoryDelete({ id }).unwrap();
     category
       .then((res) => {
-        setModalUpdate(false);
-        console.log(res);
+        if (res.statusCode === 200) {
+          message.success("Muvaffaqiyati ochirildi.");
+          setModalUpdate(false);
+        }
       })
       .catch((err) => {
-        console.log(err);
+        message.error(`Xatolik yuz berdi. Xatolik: ${err.message}`);
       });
   };
 
@@ -36,39 +38,41 @@ const Category: React.FC = () => {
       dataIndex: "id",
       key: "id",
       width: "5%",
-      render: (text) => <span>{text}</span>,
+      render: (item, record, index) => <span>{index + 1}</span>,
     },
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
       width: "75%",
-      render: (text) => <span>{text}</span>,
+      render: (item) => <span>{item}</span>,
     },
     {
       title: "Action",
       key: "action",
       width: "20%",
-      render: (value: CategoryDTO) => {
+      render: (item: CategoryDTO, record, index) => {
         return (
           <Row wrap={false} gutter={5}>
             <Col>
               <Button
                 size="small"
                 type="primary"
-                onClick={() => handleUpdate(value)}
+                ghost
+                onClick={() => handleUpdate(item)}
               >
                 Edit
               </Button>
             </Col>
             <Col>
-              <Button
-                size="small"
-                danger
-                onClick={() => handleDelete(value.id)}
+              <PopConfirm
+                onConfirm={() => handleDelete(item.id)}
+                title="Oʻchirishga ishonchingiz komilmi?"
               >
-                Delete
-              </Button>
+                <Button size="small" danger disabled={isLoading}>
+                  Delete
+                </Button>
+              </PopConfirm>
             </Col>
           </Row>
         );

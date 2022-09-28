@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, Row } from "antd";
+import { Button, Col, Form, Input, message, Row } from "antd";
 import { FormElements, Modal as AntdModal } from "components/index";
 import { useEffect } from "react";
 import { useCategoryUpdateMutation } from "store/endpoints";
@@ -12,29 +12,31 @@ type Props = {
 
 const ModalUpdate: React.FC<Props> = ({ visible, setVisible, updateData }) => {
   const [form] = Form.useForm();
-  const [categoryUpdateMutation, {isLoading}] = useCategoryUpdateMutation()
-
+  const [categoryUpdateMutation, { isLoading }] = useCategoryUpdateMutation();
 
   const handleSubmit = (value: any) => {
-    const categoryPromise = categoryUpdateMutation({id:updateData.id, value}).unwrap();
+    const categoryPromise = categoryUpdateMutation({
+      id: updateData.id,
+      value,
+    }).unwrap();
     categoryPromise
       .then((res) => {
-        setVisible(false);
-        console.log(res);
+        if (res.statusCode === 200) {
+          message.success("Muvaffaqiyati tahrirlandi.");
+          setVisible(false);
+        }
       })
       .catch((err) => {
-        console.log(err);
+        message.error(`Xatolik yuz berdi. Xatolik: ${err.message}`);
       });
-      };
-
+  };
 
   useEffect(() => {
-
     if (form.__INTERNAL__.name) {
-        form.setFieldsValue({
-          name: updateData.name,
-        });
-     }
+      form.setFieldsValue({
+        name: updateData.name,
+      });
+    }
   }, [updateData]);
 
   return (
@@ -48,7 +50,7 @@ const ModalUpdate: React.FC<Props> = ({ visible, setVisible, updateData }) => {
           form={form}
           name="basic"
           layout="vertical"
-            onFinish={handleSubmit} // onFinishFailed={onFinishFailed}
+          onFinish={handleSubmit} // onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <Form.Item
@@ -64,10 +66,17 @@ const ModalUpdate: React.FC<Props> = ({ visible, setVisible, updateData }) => {
           <Form.Item style={{ marginTop: 50 }}>
             <Row justify="end" gutter={5} wrap={false}>
               <Col>
-                <Button onClick={() => setVisible(false)}>Bekor qilish</Button>
+                <Button onClick={() => setVisible(false)} disabled={isLoading}>
+                  Bekor qilish
+                </Button>
               </Col>
               <Col>
-                <Button htmlType="submit" disabled={isLoading}>
+                <Button
+                  htmlType="submit"
+                  loading={isLoading}
+                  disabled={isLoading}
+                  type="primary"
+                >
                   Tasdiqlash
                 </Button>
               </Col>
