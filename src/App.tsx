@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import "antd/dist/antd.css";
 
 const CategoryPage = lazy(() => import("pages/Category/Category"));
+const DiscountPage = lazy(() => import("pages/Discount/Discount"));
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Suspense fallback={<Loading/>}>
         <Routes>
           <Route path="/category" element={<CategoryPage />} />
+          <Route path="/discount" element={<DiscountPage />} />
         </Routes>
       </Suspense>
     </Layout>
