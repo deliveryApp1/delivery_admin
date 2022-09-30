@@ -24,7 +24,6 @@ const Category: React.FC = () => {
       .then((res) => {
         if (res.statusCode === 200) {
           message.success("Muvaffaqiyati ochirildi.");
-          setModalUpdate(false);
         }
       })
       .catch((err) => {
@@ -32,7 +31,7 @@ const Category: React.FC = () => {
       });
   };
 
-  const columns: TableColumnsType = [
+  const columns: TableColumnsType<CategoryDTO> = [
     {
       title: "№",
       dataIndex: "id",

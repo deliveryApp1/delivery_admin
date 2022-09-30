@@ -1,5 +1,5 @@
-import { Button, Col, Form, Input, message, Row } from "antd";
-import { FormElements, Modal as AntdModal } from "components/index";
+import { Button, Col, Form, message, Row } from "antd";
+import { FormElements, Modal  } from "components/index";
 import { useEffect } from "react";
 import { useCategoryUpdateMutation } from "store/endpoints";
 import { CategoryDTO } from "types/category";
@@ -41,7 +41,7 @@ const ModalUpdate: React.FC<Props> = ({ visible, setVisible, updateData }) => {
 
   return (
     <>
-      <AntdModal
+      <Modal
         title={"Kategoriyani tahrirlash"}
         open={visible}
         onCancel={() => setVisible(false)}
@@ -83,7 +83,7 @@ const ModalUpdate: React.FC<Props> = ({ visible, setVisible, updateData }) => {
             </Row>
           </Form.Item>
         </Form>
-      </AntdModal>
+      </Modal>
     </>
   );
 };
