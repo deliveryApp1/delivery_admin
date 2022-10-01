@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -32,6 +28,6 @@
       "components/*": ["components/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", "plopfile.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "plopfile.ts", "src/i18next.js"],
   "exclude": ["node_modules"]
 }

@@ -60,6 +60,7 @@ const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk, categoryD
                 if (res.statusCode === 200) {
                     message.success("Muvaffaqiyati saqlandi.");
                     setVisible(false);
+                    setImageUrl("")
                     form.resetFields();
                 }
             })
@@ -132,7 +133,7 @@ const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk, categoryD
                             { required: true, message: `Mahsulot nomini kiriting` },
                         ]}
                     >
-                        <FormElements.Input />
+                        <FormElements.Input placeholder="Nomini kiriting" />
                     </Form.Item>
                     <Form.Item
                         name="categoryId"
@@ -152,7 +153,7 @@ const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk, categoryD
                             { required: false, message: `Ta'rif kiriting` },
                         ]}
                     >
-                        <TextArea allowClear autoSize />
+                        <TextArea allowClear autoSize placeholder="Ta'rifni kiriting" />
                     </Form.Item>
                     <Form.Item
                         name="price"
@@ -162,7 +163,7 @@ const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk, categoryD
                             { required: true, message: `Narxni kiriting` },
                         ]}
                     >
-                        <InputNumber addonAfter="so'm" />
+                        <InputNumber addonAfter="so'm" placeholder="1000" />
                     </Form.Item>
                     <Form.Item
                         name="discount"
@@ -171,7 +172,7 @@ const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk, categoryD
                             { required: false, message: `Chegirma kiriting` },
                         ]}
                     >
-                        <InputNumber addonAfter="%" />
+                        <InputNumber addonAfter="%" placeholder="5" />
                     </Form.Item>
                     <Form.Item style={{ marginTop: 50 }}>
                         <Row justify="end" gutter={5} wrap={false}>

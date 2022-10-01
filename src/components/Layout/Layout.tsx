@@ -1,5 +1,6 @@
 import { HomeOutlined, ShopOutlined, AppstoreOutlined } from "@ant-design/icons";
 import { Col, Layout as AntdLayout, Row } from "antd";
+import { useTranslation } from 'react-i18next';
 import React, { ReactNode, useMemo, useState } from "react";
 import { SideBar, Header, NavLink } from "..";
 
@@ -15,6 +16,7 @@ type Props = {
 };
 
 const Layout: React.FC<Props> = ({ children }) => {
+  const { t } = useTranslation()
   const [collapsed, setCollapsed] = useState(true);
 
   const links: LinksType[] = useMemo(
@@ -27,7 +29,7 @@ const Layout: React.FC<Props> = ({ children }) => {
               <Col>
                 <HomeOutlined />
               </Col>
-              <Col>Home</Col>
+              <Col>{t('menus.home')}</Col>
             </Row>
           </NavLink>
         ),
@@ -40,7 +42,7 @@ const Layout: React.FC<Props> = ({ children }) => {
               <Col>
                 <ShopOutlined />
               </Col>
-              <Col>Kategoriya</Col>
+              <Col>{t('menus.categories')}</Col>
             </Row>
           </NavLink>
         ),
@@ -53,7 +55,7 @@ const Layout: React.FC<Props> = ({ children }) => {
               <Col>
                 <AppstoreOutlined />
               </Col>
-              <Col>Mahsulotlar</Col>
+              <Col>{t('menus.products')}</Col>
             </Row>
           </NavLink>
         )
@@ -66,14 +68,13 @@ const Layout: React.FC<Props> = ({ children }) => {
               <Col>
                 <ShopOutlined />
               </Col>
-              <Col>Diskont</Col>
+              <Col>{t('menus.discount')}</Col>
             </Row>
           </NavLink>
         ),
       }
     ],
-
-    []
+    [t]
   );
 
   return (
