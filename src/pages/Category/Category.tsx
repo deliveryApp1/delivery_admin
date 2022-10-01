@@ -23,7 +23,7 @@ const Category: React.FC = () => {
     category
       .then((res) => {
         if (res.statusCode === 200) {
-          message.success("Muvaffaqiyati ochirildi.");
+          message.success("Muvaffaqiyati o'chirildi.");
           setModalUpdate(false);
         }
       })
@@ -41,14 +41,14 @@ const Category: React.FC = () => {
       render: (item, record, index) => <span>{index + 1}</span>,
     },
     {
-      title: "Name",
+      title: "Nomi",
       dataIndex: "name",
       key: "name",
       width: "75%",
       render: (item) => <span>{item}</span>,
     },
     {
-      title: "Action",
+      title: "Amallar",
       key: "action",
       width: "20%",
       render: (item: CategoryDTO, record, index) => {
@@ -101,6 +101,7 @@ const Category: React.FC = () => {
         dataSource={categoryQuery.data?.data}
         loading={categoryQuery.isFetching}
         pagination={{ defaultPageSize: 5 }}
+        rowKey={record => record.id}
       />
       <ModalCreate visible={modalCreate} setVisible={setModalCreate} />
       <ModalUpdate

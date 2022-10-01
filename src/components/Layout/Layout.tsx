@@ -1,13 +1,13 @@
-import { HomeOutlined, ShopOutlined } from "@ant-design/icons";
+import { HomeOutlined, ShopOutlined, AppstoreOutlined } from "@ant-design/icons";
 import { Col, Layout as AntdLayout, Row } from "antd";
 import React, { ReactNode, useMemo, useState } from "react";
-import { SideBar, Header ,NavLink } from "..";
+import { SideBar, Header, NavLink } from "..";
 
 const { Content } = AntdLayout;
 
 export type LinksType = {
   key: string;
-  item: ReactNode;
+  label: ReactNode;
 };
 
 type Props = {
@@ -15,15 +15,13 @@ type Props = {
 };
 
 const Layout: React.FC<Props> = ({ children }) => {
-  const [collapsed, setCollapsed] = useState(false);
-
-
+  const [collapsed, setCollapsed] = useState(true);
 
   const links: LinksType[] = useMemo(
     () => [
       {
         key: "1",
-        item: (
+        label: (
           <NavLink to={"/"}>
             <Row align="middle" wrap={false} gutter={20}>
               <Col>
@@ -36,7 +34,7 @@ const Layout: React.FC<Props> = ({ children }) => {
       },
       {
         key: "2",
-        item: (
+        label: (
           <NavLink to={"/category"}>
             <Row align="middle" wrap={false} gutter={20}>
               <Col>
@@ -47,12 +45,25 @@ const Layout: React.FC<Props> = ({ children }) => {
           </NavLink>
         ),
       },
+      {
+        key: "3",
+        label: (
+          <NavLink to={"/products"}>
+            <Row align="middle" wrap={false} gutter={20}>
+              <Col>
+                <AppstoreOutlined />
+              </Col>
+              <Col>Mahsulotlar</Col>
+            </Row>
+          </NavLink>
+        ),
+      },
     ],
     []
   );
 
   return (
-    <AntdLayout style={{ height: "100vh" , overflow: 'hidden' }}>
+    <AntdLayout style={{ height: "100vh", overflow: 'hidden' }}>
       <SideBar links={links} collapsed={collapsed} />
       <AntdLayout>
         <Header collapsed={collapsed} setCollapsed={setCollapsed} />

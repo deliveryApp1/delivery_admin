@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, message, Row } from "antd";
+import { Button, Col, Form, message, Row } from "antd";
 import { FormElements, Modal as AntdModal } from "components/index";
 import { useEffect } from "react";
 import { useCategoryUpdateMutation } from "store/endpoints";

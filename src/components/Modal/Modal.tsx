@@ -19,11 +19,11 @@ const Modal: FC<Props> = ({ title, confirm, children, onSubmit, ...props }) => {
         confirm ? (
           <Row justify="end" gutter={10} wrap={false}>
             <Col>
-              <Button>yoq</Button>
+              <Button>Yo'q</Button>
             </Col>
             <Col>
               <Button htmlType="submit" onClick={onSubmit}>
-                xa
+                Ha
               </Button>
             </Col>
           </Row>
@@ -34,7 +34,7 @@ const Modal: FC<Props> = ({ title, confirm, children, onSubmit, ...props }) => {
     >
       {title && (
         <h2>
-          {confirm ? <ExclamationCircleOutlined  style={{color:"#FAAD14"}} /> : ''} {title}
+          {confirm ? <ExclamationCircleOutlined style={{ color: "#FAAD14" }} /> : ''} {title}
         </h2>
       )}
       {children}
