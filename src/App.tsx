@@ -7,6 +7,7 @@ import "antd/dist/antd.css";
 const CategoryPage = lazy(() => import("pages/Category/Category"));
 const ProductPage = lazy(() => import('pages/Products/Product'))
 const HomePage = lazy(() => import('pages/Home'))
+const DiscountPage = lazy(() => import("pages/Discount/Discount"));
 
 function App() {
   return (
@@ -16,9 +17,10 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/category" element={<CategoryPage />} />
           <Route path="/products" element={<ProductPage />} />
-        </Routes>
-      </Suspense>
-    </Layout>
+          <Route path="/discount" element={<DiscountPage />} />
+        </Routes >
+      </Suspense >
+    </Layout >
   );
 }
 

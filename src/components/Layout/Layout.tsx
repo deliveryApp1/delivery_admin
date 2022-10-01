@@ -56,9 +56,23 @@ const Layout: React.FC<Props> = ({ children }) => {
               <Col>Mahsulotlar</Col>
             </Row>
           </NavLink>
-        ),
+        )
       },
+      {
+        key: "4",
+        label: (
+          <NavLink to={"/discount"}>
+            <Row align="middle" wrap={false} gutter={20}>
+              <Col>
+                <ShopOutlined />
+              </Col>
+              <Col>Diskont</Col>
+            </Row>
+          </NavLink>
+        ),
+      }
     ],
+
     []
   );
 

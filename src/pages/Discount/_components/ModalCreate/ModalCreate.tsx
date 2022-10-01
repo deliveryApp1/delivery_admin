@@ -1,7 +1,7 @@
 import { Button, Col, Form, message, Row } from "antd";
-import { FormElements, Modal  } from "components/index";
-import { useCategoryAddMutation } from "store/endpoints";
-import { CategoryDTO } from "types/category";
+import { FormElements, Modal, Upload  } from "components/index";
+import { useDiscountAddMutation } from "store/endpoints";
+import { DiscountDTO } from "types/discount";
 
 type Props = {
   visible: boolean;
@@ -10,10 +10,10 @@ type Props = {
 };
 const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk }) => {
   const [form] = Form.useForm();
-  const [categoryMutation, { isLoading }] = useCategoryAddMutation();
+  const [discountMutation, { isLoading }] = useDiscountAddMutation();
 
-  const handleSubmit = (value: CategoryDTO) => {
-    const categoryPromise = categoryMutation(value).unwrap();
+  const handleSubmit = (value: DiscountDTO) => {
+    const categoryPromise = discountMutation(value).unwrap();
     categoryPromise
       .then((res) => {
         if (res.statusCode === 200) {
@@ -33,7 +33,9 @@ const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk }) => {
         title={"Kategoriya yaratish"}
         open={visible}
         onOk={handleOk}
-        onCancel={() => setVisible(false)}         >
+        onCancel={() => setVisible(false)}>
+        <Upload />
+        
         <Form
           form={form}
           name="basic"
@@ -62,7 +64,7 @@ const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk }) => {
                   htmlType="submit"
                   loading={isLoading}
                   disabled={isLoading}
-                  type="primary" 
+                  type="primary"
                 >
                   Tasdiqlash
                 </Button>

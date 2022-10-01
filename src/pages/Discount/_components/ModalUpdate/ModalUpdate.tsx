@@ -1,25 +1,29 @@
 import { Button, Col, Form, message, Row } from "antd";
 import { FormElements, Modal  } from "components/index";
-import { useCategoryAddMutation } from "store/endpoints";
+import { useEffect } from "react";
+import { useCategoryUpdateMutation } from "store/endpoints";
 import { CategoryDTO } from "types/category";
 
 type Props = {
   visible: boolean;
   setVisible: (bool: boolean) => void;
-  handleOk?: () => void;
+  updateData: CategoryDTO;
 };
-const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk }) => {
-  const [form] = Form.useForm();
-  const [categoryMutation, { isLoading }] = useCategoryAddMutation();
 
-  const handleSubmit = (value: CategoryDTO) => {
-    const categoryPromise = categoryMutation(value).unwrap();
+const ModalUpdate: React.FC<Props> = ({ visible, setVisible, updateData }) => {
+  const [form] = Form.useForm();
+  const [categoryUpdateMutation, { isLoading }] = useCategoryUpdateMutation();
+
+  const handleSubmit = (value: any) => {
+    const categoryPromise = categoryUpdateMutation({
+      id: updateData.id,
+      value,
+    }).unwrap();
     categoryPromise
       .then((res) => {
         if (res.statusCode === 200) {
-          message.success("Muvaffaqiyati yaratildi.");
+          message.success("Muvaffaqiyati tahrirlandi.");
           setVisible(false);
-          form.resetFields();
         }
       })
       .catch((err) => {
@@ -27,13 +31,21 @@ const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk }) => {
       });
   };
 
+  useEffect(() => {
+    if (form.__INTERNAL__.name) {
+      form.setFieldsValue({
+        name: updateData.name,
+      });
+    }
+  }, [updateData]);
+
   return (
     <>
       <Modal
-        title={"Kategoriya yaratish"}
+        title={"Kategoriyani tahrirlash"}
         open={visible}
-        onOk={handleOk}
-        onCancel={() => setVisible(false)}         >
+        onCancel={() => setVisible(false)}
+      >
         <Form
           form={form}
           name="basic"
@@ -50,6 +62,7 @@ const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk }) => {
           >
             <FormElements.Input />
           </Form.Item>
+
           <Form.Item style={{ marginTop: 50 }}>
             <Row justify="end" gutter={5} wrap={false}>
               <Col>
@@ -62,7 +75,7 @@ const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk }) => {
                   htmlType="submit"
                   loading={isLoading}
                   disabled={isLoading}
-                  type="primary" 
+                  type="primary"
                 >
                   Tasdiqlash
                 </Button>
@@ -75,4 +88,4 @@ const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk }) => {
   );
 };
 
-export default ModalCreate;
+export default ModalUpdate;

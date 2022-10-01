@@ -3,28 +3,37 @@ import { Button, Col, message, Row, TableColumnsType } from "antd";
 import { Typography } from "antd";
 import { PopConfirm, Table } from "components/index";
 import ModalCreate from "./_components/ModalCreate/ModalCreate";
-import { CategoryDTO } from "types/category";
 import ModalUpdate from "./_components/ModalUpdate/ModalUpdate";
-import { useCategoryDeleteMutation, useCategoryQuery } from "store/endpoints";
+import { DiscountDTO } from "types/discount";
+import { useNavigate } from "react-router-dom";
+import { useDiscountDeleteMutation, useDiscountQuery } from "store/endpoints";
 
-const Category: React.FC = () => {
-  const categoryQuery = useCategoryQuery();
-  const [categoryDelete, { isLoading }] = useCategoryDeleteMutation();
+const Discount: React.FC = () => {
+  const discountQuery = useDiscountQuery();
+  const [discountDelete, { isLoading }] = useDiscountDeleteMutation();
   const [modalCreate, setModalCreate] = useState<boolean>(false);
-  const [modalUpdate, setModalUpdate] = useState<boolean>(false);
-  const [updateData, setUpdateData] = useState<CategoryDTO>({ name: "" });
+  // const [modalUpdate, setModalUpdate] = useState<boolean>(false);
+  // const [updateData, setUpdateData] = useState<DiscountDTO>({ name: "" });
+  const [page, setPage] = useState(1);
+  const history = useNavigate();
 
-  const handleUpdate = (data: CategoryDTO) => {
-    setModalUpdate(true);
-    setUpdateData(data);
-  };
+  function onChange(page: number) {
+    setPage(page);
+    // history(`/admin/finance?type=salaries&page=${page}`);
+  }
+
+  // const handleUpdate = (data: DiscountDTO) => {
+  //   setModalUpdate(true);
+  //   setUpdateData(data);
+  // };
+
+
   const handleDelete = (id: number | undefined) => {
-    const category = categoryDelete({ id }).unwrap();
-    category
+    const discount = discountDelete({ id }).unwrap();
+    discount
       .then((res) => {
         if (res.statusCode === 200) {
-          message.success("Muvaffaqiyati o'chirildi.");
-          setModalUpdate(false);
+          message.success("Muvaffaqiyati ochirildi.");
         }
       })
       .catch((err) => {
@@ -32,26 +41,42 @@ const Category: React.FC = () => {
       });
   };
 
-  const columns: TableColumnsType<CategoryDTO> = [
+  const columns: TableColumnsType<DiscountDTO> = [
     {
       title: "№",
       dataIndex: "id",
       key: "id",
       width: "5%",
-      render: (item, record, index) => <span>{index + 1}</span>,
+      render: (_, __, index) => <span>{index + 1}</span>,
     },
     {
-      title: "Nomi",
-      dataIndex: "name",
-      key: "name",
-      width: "75%",
+      title: "Rasim",
+      dataIndex: "image",
+      key: "image",
+      width: "5%",
+      render: (item) => <div> <img src={item.image} alt={item.title} /> </div>
+    },
+    {
+      title: "Name",
+      dataIndex: "title",
+      key: "title",
+      width: "30%",
       render: (item) => <span>{item}</span>,
     },
+
     {
-      title: "Amallar",
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+      width: "40%",
+      render: (item) => <span>{item}</span>,
+    },
+
+    {
+      title: "Action",
       key: "action",
       width: "20%",
-      render: (item: CategoryDTO, record, index) => {
+      render: (item: DiscountDTO) => {
         return (
           <Row wrap={false} gutter={5}>
             <Col>
@@ -59,7 +84,7 @@ const Category: React.FC = () => {
                 size="small"
                 type="primary"
                 ghost
-                onClick={() => handleUpdate(item)}
+              // onClick={() => handleUpdate(item)}
               >
                 Edit
               </Button>
@@ -95,22 +120,26 @@ const Category: React.FC = () => {
           </Button>
         </Col>
       </Row>
-
       <Table
         columns={columns}
-        dataSource={categoryQuery.data?.data}
-        loading={categoryQuery.isFetching}
-        pagination={{ defaultPageSize: 5 }}
-        rowKey={record => record.id}
+        dataSource={discountQuery.data?.data}
+        loading={discountQuery.isFetching}
+        pagination={{
+          total: discountQuery.data?.data.length,
+          pageSize: 10,
+          current: page,
+          onChange: (e) => onChange(e),
+          showSizeChanger: false,
+        }}
       />
       <ModalCreate visible={modalCreate} setVisible={setModalCreate} />
-      <ModalUpdate
+      {/* <ModalUpdate
         updateData={updateData}
         visible={modalUpdate}
         setVisible={setModalUpdate}
-      />
+      /> */}
     </>
   );
 };
 
-export default Category;
+export default Discount;

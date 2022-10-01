@@ -1,21 +1,26 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
-import { categoryApi } from './endpoints';
-import { productApi } from './endpoints';
-import { appApi } from './endpoints';
+import { appApi, categoryApi, discountApi, photosApi, productApi } from './endpoints';
+
 
 const store = configureStore({
   reducer: {
     [categoryApi.reducerPath]: categoryApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
     [appApi.reducerPath]: appApi.reducer,
+    [discountApi.reducerPath]: discountApi.reducer,
+    [photosApi.reducerPath]: photosApi.reducer,
 
     // filters: filtersSlice.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
-      .concat(appApi.middleware, categoryApi.middleware, productApi.middleware)
+      .concat(appApi.middleware)
+      .concat(productApi.middleware)
+      .concat(categoryApi.middleware)
+      .concat(discountApi.middleware)
+      .concat(photosApi.middleware)
 });
 
 setupListeners(store.dispatch);
