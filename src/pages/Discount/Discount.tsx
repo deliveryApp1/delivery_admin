@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Col, message, Row, TableColumnsType } from "antd";
+import { Button, Col, Image, message, Row, Space, TableColumnsType } from "antd";
 import { Typography } from "antd";
 import { PopConfirm, Table } from "components/index";
 import ModalCreate from "./_components/ModalCreate/ModalCreate";
@@ -12,20 +12,19 @@ const Discount: React.FC = () => {
   const discountQuery = useDiscountQuery();
   const [discountDelete, { isLoading }] = useDiscountDeleteMutation();
   const [modalCreate, setModalCreate] = useState<boolean>(false);
-  // const [modalUpdate, setModalUpdate] = useState<boolean>(false);
-  // const [updateData, setUpdateData] = useState<DiscountDTO>({ name: "" });
+  const [modalUpdate, setModalUpdate] = useState<boolean>(false);
+  const [updateData, setUpdateData] = useState<DiscountDTO>({title: '', description: '', image: ''});
   const [page, setPage] = useState(1);
   const history = useNavigate();
 
   function onChange(page: number) {
     setPage(page);
-    // history(`/admin/finance?type=salaries&page=${page}`);
   }
 
-  // const handleUpdate = (data: DiscountDTO) => {
-  //   setModalUpdate(true);
-  //   setUpdateData(data);
-  // };
+  const handleUpdate = (data: DiscountDTO) => {
+    setModalUpdate(true);
+    setUpdateData(data);
+  };
 
 
   const handleDelete = (id: number | undefined) => {
@@ -54,7 +53,13 @@ const Discount: React.FC = () => {
       dataIndex: "image",
       key: "image",
       width: "5%",
-      render: (item) => <div> <img src={item.image} alt={item.title} /> </div>
+      render: (item, record) => {
+        return <Image
+          width={30}
+          height={30}
+          src={`http://147.182.130.242:3000/${record.image}`}
+          />
+      }
     },
     {
       title: "Name",
@@ -84,7 +89,7 @@ const Discount: React.FC = () => {
                 size="small"
                 type="primary"
                 ghost
-              // onClick={() => handleUpdate(item)}
+              onClick={() => handleUpdate(item)}
               >
                 Edit
               </Button>
@@ -104,6 +109,8 @@ const Discount: React.FC = () => {
       },
     },
   ];
+
+  
 
   return (
     <>
@@ -133,11 +140,11 @@ const Discount: React.FC = () => {
         }}
       />
       <ModalCreate visible={modalCreate} setVisible={setModalCreate} />
-      {/* <ModalUpdate
+      <ModalUpdate
         updateData={updateData}
         visible={modalUpdate}
         setVisible={setModalUpdate}
-      /> */}
+      />
     </>
   );
 };
