@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 import { appApi, categoryApi, discountApi, productApi } from './endpoints';
-
+import reducer from './rootReducer';
 
 const store = configureStore({
   reducer: {
@@ -9,7 +9,7 @@ const store = configureStore({
     [productApi.reducerPath]: productApi.reducer,
     [appApi.reducerPath]: appApi.reducer,
     [discountApi.reducerPath]: discountApi.reducer,
-
+    ...reducer
     // filters: filtersSlice.reducer,
   },
 

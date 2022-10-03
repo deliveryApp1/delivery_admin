@@ -8,6 +8,9 @@
     "products": "Products",
     "discount": "Discounts"
   },
+  "close": "Close",
+  "add": "Add",
+  "edit": "Edit",
   "login": "Sign in",
   "user": "User",
   "logout": "Sign out",

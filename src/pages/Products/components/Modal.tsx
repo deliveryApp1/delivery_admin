@@ -1,20 +1,20 @@
-import { useProductAddMutation } from "store/endpoints";
-import { Button, Col, Form, message, Row, Input, InputNumber, Upload, Select } from "antd";
-import { FormElements, Modal as AntdModal } from "components/index";
-import { ProductDTO } from "types";
+import { useProductAddMutation, useProductUpdateMutation } from "store/endpoints";
+import { Form, message, Input, InputNumber, Upload, Select, ModalProps, Modal } from "antd";
+import { FormElements } from "components/index";
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import type { UploadChangeParam } from 'antd/es/upload';
+import { useDispatch } from 'react-redux';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { updateProductStates } from "../productSlice";
 
 const { TextArea } = Input
 const { Option } = Select;
 
-type Props = {
-    visible: boolean;
-    setVisible: (bool: boolean) => void;
-    handleOk?: () => void;
-    categoryData: any
+type Props = ModalProps & {
+    categoryData: any,
+    updateData: any,
+    modalType: string;
 };
 
 const formItemLayout = {
@@ -44,29 +44,75 @@ const beforeUpload = (file: RcFile) => {
     return isJpgOrPng && isLt2M;
 };
 
-const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk, categoryData }) => {
+const ProductModal: React.FC<Props> = ({ updateData, categoryData, modalType, ...modalProps }) => {
+    const dispatch = useDispatch()
     const [loading, setLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState<string>();
     const [responseImageUrl, setResponseImageUrl] = useState<string>();
     const [form] = Form.useForm();
-    const [productMutation, { isLoading }] = useProductAddMutation();
-
-    const handleSubmit = (value: ProductDTO) => {
-        const formData = { ...value, image: responseImageUrl }
-
-        const productPromise = productMutation(formData).unwrap();
-        productPromise
-            .then((res) => {
-                if (res.statusCode === 200) {
-                    message.success("Muvaffaqiyati saqlandi.");
-                    setVisible(false);
-                    setImageUrl("")
-                    form.resetFields();
-                }
+    const [productUpdateMutation, productUpdate] = useProductUpdateMutation();
+    const [productMutation, productCreate] = useProductAddMutation();
+    const clearState = () => {
+        setImageUrl('')
+        form.resetFields()
+    }
+    useEffect(() => {
+        if (updateData && modalType === 'update') {
+            console.log('updateData: ', updateData);
+            setImageUrl(`http://147.182.130.242:3000/${updateData?.image}`)
+            form.setFieldsValue({
+                image: updateData?.image,
+                name: updateData?.name,
+                categoryId: updateData?.categoryId,
+                description: updateData?.description,
+                price: updateData?.price,
+                discount: updateData?.discount
             })
-            .catch((err) => {
-                message.error(`Xatolik yuz berdi. Xatolik: ${err.message}`);
-            });
+        }
+        return () => clearState()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [updateData, modalType])
+
+    const handleSubmit = () => {
+        form.validateFields()
+            .then(data => {
+                console.log('data: ', data);
+                const formData = { ...data, image: responseImageUrl }
+                if (modalType === 'update') {
+                    data.image = responseImageUrl
+                    const productPromise = productUpdateMutation({
+                        id: updateData.id,
+                        value: formData,
+                    }).unwrap();
+                    productPromise
+                        .then((res: { statusCode: number; }) => {
+                            if (res.statusCode === 200) {
+                                message.success("Muvaffaqiyati tahrirlandi.");
+                                dispatch(updateProductStates({ openModal: false, modalType: '' }))
+                                setImageUrl("")
+                                form.resetFields();
+                            }
+                        })
+                        .catch((err: { message: any; }) => {
+                            message.error(`Xatolik yuz berdi. Xatolik: ${err.message}`);
+                        });
+                } else if (modalType === 'create') {
+                    const productPromise = productMutation(formData).unwrap();
+                    productPromise
+                        .then((res) => {
+                            if (res.statusCode === 200) {
+                                message.success("Muvaffaqiyati saqlandi.");
+                                dispatch(updateProductStates({ openModal: false, modalType: '' }))
+                                setImageUrl("")
+                                form.resetFields();
+                            }
+                        })
+                        .catch((err) => {
+                            message.error(`Xatolik yuz berdi. Xatolik: ${err.message}`);
+                        });
+                }
+            }).catch(err => console.log('Form error: ', err))
+
     };
 
     const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
@@ -91,20 +137,17 @@ const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk, categoryD
         </div>
     );
     const categoryOptions = categoryData?.map((category: { id: any; name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (<Option key={category.id} value={category.id}>{category.name}</Option>))
+    const props = { onOk: handleSubmit, confirmLoading: modalType.length ? modalType === 'create' ? productCreate.isLoading : productUpdate.isLoading : false, ...modalProps }
     return (
         <>
-            <AntdModal
-                title={"Mahsulot qo'shish"}
-                open={visible}
-                onOk={handleOk}
-                onCancel={() => setVisible(false)}
+            <Modal
+                {...props}
             >
                 <Form
                     {...formItemLayout}
                     form={form}
                     name="basic"
                     layout="horizontal"
-                    onFinish={handleSubmit} // onFinishFailed={onFinishFailed}
                     autoComplete="off"
                 >
                     <Form.Item
@@ -122,6 +165,7 @@ const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk, categoryD
                             action="http://147.182.130.242:3000/image-upload"
                             beforeUpload={beforeUpload}
                             onChange={handleChange}
+                            maxCount={1}
                         >
                             {imageUrl ? <img src={imageUrl} alt="productImage" style={{ width: '100%' }} /> : uploadButton}
                         </Upload>
@@ -150,7 +194,7 @@ const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk, categoryD
                         name="description"
                         label="Ta'rifi:"
                         rules={[
-                            { required: false, message: `Ta'rif kiriting` },
+                            { required: true, message: `Ta'rif kiriting` },
                         ]}
                     >
                         <TextArea allowClear autoSize placeholder="Ta'rifni kiriting" />
@@ -174,29 +218,10 @@ const ModalCreate: React.FC<Props> = ({ visible, setVisible, handleOk, categoryD
                     >
                         <InputNumber addonAfter="%" placeholder="5" />
                     </Form.Item>
-                    <Form.Item style={{ marginTop: 50 }}>
-                        <Row justify="end" gutter={5} wrap={false}>
-                            <Col>
-                                <Button onClick={() => setVisible(false)} disabled={isLoading}>
-                                    Bekor qilish
-                                </Button>
-                            </Col>
-                            <Col>
-                                <Button
-                                    htmlType="submit"
-                                    loading={isLoading}
-                                    disabled={isLoading}
-                                    type="primary"
-                                >
-                                    Tasdiqlash
-                                </Button>
-                            </Col>
-                        </Row>
-                    </Form.Item>
                 </Form>
-            </AntdModal>
+            </Modal>
         </>
     );
 };
 
-export default ModalCreate;
+export default ProductModal;

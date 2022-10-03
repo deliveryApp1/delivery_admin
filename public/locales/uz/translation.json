@@ -8,6 +8,9 @@
     "products": "Mahsulotlar",
     "discount": "Chegirmalar"
   },
+  "close": "Yopish",
+  "add": "Qo'shish",
+  "edit": "Tahrirlash",
   "login": "Tizimga kirish",
   "user": "Foydalanuvchi",
   "logout": "Chiqish",
