@@ -1,0 +1,17 @@
+{
+  "menus": {
+    "home": "Home",
+    "posts": "Posts",
+    "profile": "Profile",
+    "call": "Qo'ng'iroq",
+    "categories": "Categories",
+    "products": "Products",
+    "discount": "Discounts"
+  },
+  "login": "Sign in",
+  "user": "User",
+  "logout": "Sign out",
+  "lan": "Language",
+  "chat": "Chat",
+  "confirm_signout": "Are you sure you want to leave?"
+}

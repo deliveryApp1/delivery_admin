@@ -16,17 +16,17 @@ export const discountApi = createApi({
 
   endpoints: (builder) => ({
     // Queries
-    discount: builder.query<GetDiscountType, { page?: number; pagesize?: number;} | void>({
+    discount: builder.query<GetDiscountType, { page?: number; pagesize?: number; } | void>({
       query: (queries) => ({
         url: "/discount",
-        params : {...queries}
+        params: { ...queries }
       }),
       providesTags: ["Discount"],
     }),
 
     // Mutations
 
-    discountAdd: builder.mutation<GetDiscountType, DiscountDTO>({
+    discountAdd: builder.mutation<GetDiscountType, { title: string | undefined, description: string | undefined, image: string | undefined }>({
       query: (data) => ({
         url: "/discount",
         method: "POST",
@@ -36,20 +36,20 @@ export const discountApi = createApi({
     }),
 
 
-    // discountUpdate: builder.mutation<
-    //   GetDiscountType,
-    //   { id: number | undefined; value:{name:string} | undefined }
-    // >({
-    //   query: ({ id, value }) => ({
-    //     url: `/discount/${id}`,
-    //     method: "PUT",
-    //     body: value,
-    //   }),
-    //   invalidatesTags: ["Discount"],
-    // }),
+    discountUpdate: builder.mutation<
+      GetDiscountType,
+      { id: number | undefined; value:{title:string , image: string, description: string}  }
+    >({
+      query: ({ id, value }) => ({
+        url: `/discount/${id}`,
+        method: "PUT",
+        body: value,
+      }),
+      invalidatesTags: ["Discount"],
+    }),
 
-    discountDelete: builder.mutation<GetDiscountType, { id: number | undefined}>({
-      query: ({id}) => ({
+    discountDelete: builder.mutation<GetDiscountType, { id: number | undefined }>({
+      query: ({ id }) => ({
         url: `/discount/${id}`,
         method: 'DELETE',
       }),
@@ -61,6 +61,6 @@ export const discountApi = createApi({
 export const {
   useDiscountQuery,
   useDiscountAddMutation,
-  // useDiscountUpdateMutation,
+  useDiscountUpdateMutation,
   useDiscountDeleteMutation
 } = discountApi;

@@ -1,10 +1,12 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next';
 
 type Props = {}
 
 const HomePage: React.FC = (props: Props) => {
+    const { t } = useTranslation()
     return (
-        <div>HomePage</div>
+        <div>{t('menus.home')}</div>
     )
 }
 

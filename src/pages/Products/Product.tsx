@@ -1,22 +1,26 @@
 import React, { useState } from "react";
-import { Button, Col, message, Row, TableColumnsType, Image, Space } from "antd";
-import { Typography } from "antd";
+import type { RootState } from '../../store/store'
+import { Button, Col, message, Row, TableColumnsType, Image, Space, Typography } from "antd";
+import { useTranslation } from 'react-i18next';
 import { PopConfirm, Table } from "components/index";
-import CreateModal from "./components/CreateModal/CreateModal";
-import UpdateModal from "./components/UpdateModal/UpdateModal";
+import ProductModal from "./components/Modal";
 import { ProductDTO } from "types";
 import { useProductDeleteMutation, useProductQuery, useCategoryQuery } from "store/endpoints";
+import { useSelector, useDispatch } from 'react-redux';
+import { updateProductStates } from "./productSlice";
 
 const Category: React.FC = () => {
+    const { t } = useTranslation()
+    const { openModal, modalType } = useSelector((state: RootState) => state.productSlice)
+    const dispatch = useDispatch()
+
     const categoryQuery = useCategoryQuery();
     const productQuery = useProductQuery();
     const [productDelete, { isLoading }] = useProductDeleteMutation();
-    const [modalCreate, setModalCreate] = useState<boolean>(false);
-    const [modalUpdate, setModalUpdate] = useState<boolean>(false);
-    const [updateData, setUpdateData] = useState<ProductDTO>({ name: '', categoryId: 0, image: '', description: '', price: 0, discount: 0 });
-    const handleUpdate = (data: ProductDTO) => {
-        setModalUpdate(true);
+    const [updateData, setUpdateData] = useState();
+    const handleUpdate = (data: any) => {
         setUpdateData(data);
+        dispatch(updateProductStates({ openModal: true, modalType: 'update' }))
     };
     const handleDelete = (id: number | undefined) => {
         const category = productDelete({ id }).unwrap();
@@ -24,7 +28,6 @@ const Category: React.FC = () => {
             .then((res) => {
                 if (res.statusCode === 200) {
                     message.success("Muvaffaqiyati o'chirildi.");
-                    setModalUpdate(false);
                 }
             })
             .catch((err) => {
@@ -37,7 +40,7 @@ const Category: React.FC = () => {
             title: "№",
             dataIndex: "id",
             key: "id",
-            // width: "5%",
+            width: "5%",
             render: (item, record, index) => <span>{index + 1}</span>,
         },
         {
@@ -46,7 +49,7 @@ const Category: React.FC = () => {
             key: "name",
             // width: "75%",
             render: (item, record: any) => {
-                return <Space size={2}>
+                return <Space size={5}>
                     <Image
                         width={30}
                         height={30}
@@ -90,7 +93,7 @@ const Category: React.FC = () => {
                                 ghost
                                 onClick={() => handleUpdate(item)}
                             >
-                                Tahrirlash
+                                {t('edit')}
                             </Button>
                         </Col>
                         <Col>
@@ -108,19 +111,31 @@ const Category: React.FC = () => {
             },
         },
     ];
+    const handleCloseModal = () => {
+        dispatch(updateProductStates({ openModal: false, modalType: '' }))
+        setUpdateData(undefined)
+    }
+
+    const modalProps = {
+        title: "Mahsulot qo'shish",
+        open: openModal,
+        okText: modalType === 'update' ? t('edit') : t('add'),
+        cancelText: t('close'),
+        onCancel: handleCloseModal
+    }
 
     return (
         <>
             <Row>
                 <Col span={20}>
-                    <Typography.Title level={2}>Mahsulotlar</Typography.Title>
+                    <Typography.Title level={2}>{t('menus.products')}</Typography.Title>
                 </Col>
                 <Col span={4}>
                     <Button
                         type="primary"
-                        onClick={() => setModalCreate((prev) => !prev)}
+                        onClick={() => dispatch(updateProductStates({ openModal: true, modalType: 'create' }))}
                     >
-                        Yaratish
+                        {t('add')}
                     </Button>
                 </Col>
             </Row>
@@ -132,13 +147,13 @@ const Category: React.FC = () => {
                 pagination={{ defaultPageSize: 5 }}
                 rowKey={record => record.id}
             />
-            <CreateModal visible={modalCreate} setVisible={setModalCreate} categoryData={categoryQuery.data?.data} />
-            <UpdateModal
+            <ProductModal updateData={updateData} modalType={modalType} categoryData={categoryQuery.data?.data} {...modalProps} />
+            {/* <UpdateModal
                 updateData={updateData}
                 visible={modalUpdate}
                 setVisible={setModalUpdate}
                 categoryData={categoryQuery.data?.data}
-            />
+            /> */}
         </>
     );
 };
