@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
-import { appApi, categoryApi, discountApi, productApi } from './endpoints';
+import { appApi, categoryApi, discountApi, productApi, usersApi } from './endpoints';
 import reducer from './rootReducer';
 
 const store = configureStore({
@@ -9,6 +9,7 @@ const store = configureStore({
     [productApi.reducerPath]: productApi.reducer,
     [appApi.reducerPath]: appApi.reducer,
     [discountApi.reducerPath]: discountApi.reducer,
+    [usersApi.reducerPath]: usersApi.reducer,
     ...reducer
     // filters: filtersSlice.reducer,
   },
@@ -19,6 +20,7 @@ const store = configureStore({
       .concat(productApi.middleware)
       .concat(categoryApi.middleware)
       .concat(discountApi.middleware)
+      .concat(usersApi.middleware)
 });
 
 setupListeners(store.dispatch);
