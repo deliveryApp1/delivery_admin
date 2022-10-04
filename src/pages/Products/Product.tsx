@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import type { RootState } from '../../store/store'
-import { Button, Col, message, Row, TableColumnsType, Image, Space, Typography } from "antd";
+import { Button, Col, message, Row, Image, Space, Typography, Table, Popconfirm } from "antd";
+import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
-import { PopConfirm, Table } from "components/index";
 import ProductModal from "./components/Modal";
 import { ProductDTO } from "types";
 import { useProductDeleteMutation, useProductQuery, useCategoryQuery } from "store/endpoints";
 import { useSelector, useDispatch } from 'react-redux';
 import { updateProductStates } from "./productSlice";
 
-const Category: React.FC = () => {
+const Products: React.FC = () => {
     const { t } = useTranslation()
     const { openModal, modalType } = useSelector((state: RootState) => state.productSlice)
     const dispatch = useDispatch()
@@ -35,7 +35,7 @@ const Category: React.FC = () => {
             });
     };
 
-    const columns: TableColumnsType = [
+    const columns: ColumnsType<any> = [
         {
             title: "№",
             dataIndex: "id",
@@ -44,7 +44,7 @@ const Category: React.FC = () => {
             render: (item, record, index) => <span>{index + 1}</span>,
         },
         {
-            title: "Nomi",
+            title: t("productsMenu.name"),
             dataIndex: "name",
             key: "name",
             // width: "75%",
@@ -59,28 +59,28 @@ const Category: React.FC = () => {
             }
         },
         {
-            title: "Tarifi",
+            title: t("productsMenu.description"),
             dataIndex: "description",
             key: "description",
             // width: "75%",
             render: (item, record) => <>{item}</>
         },
         {
-            title: "Narxi",
+            title: t("productsMenu.price"),
             dataIndex: "price",
             key: "price",
             // width: "75%",
             render: (item, record) => <>{item}</>
         },
         {
-            title: "Chegirma",
+            title: t("productsMenu.discount"),
             dataIndex: "discount",
             key: "discount",
             // width: "75%",
             render: (item, record) => <>{item}</>
         },
         {
-            title: "Amallar",
+            title: t("actions"),
             key: "action",
             width: "20%",
             render: (item: ProductDTO, record, index) => {
@@ -97,14 +97,16 @@ const Category: React.FC = () => {
                             </Button>
                         </Col>
                         <Col>
-                            <PopConfirm
+                            <Popconfirm
+                                okText={t("yes")}
+                                cancelText={t("no")}
                                 onConfirm={() => handleDelete(item.id)}
-                                title="Oʻchirishga ishonchingiz komilmi?"
+                                title={t("sureDelete")}
                             >
                                 <Button size="small" danger disabled={isLoading}>
-                                    O'chirish
+                                    {t("delete")}
                                 </Button>
-                            </PopConfirm>
+                            </Popconfirm>
                         </Col>
                     </Row>
                 );
@@ -117,7 +119,7 @@ const Category: React.FC = () => {
     }
 
     const modalProps = {
-        title: "Mahsulot qo'shish",
+        title: modalType === 'update' ? t('edit') : t('add'),
         open: openModal,
         okText: modalType === 'update' ? t('edit') : t('add'),
         cancelText: t('close'),
@@ -147,15 +149,9 @@ const Category: React.FC = () => {
                 pagination={{ defaultPageSize: 5 }}
                 rowKey={record => record.id}
             />
-            <ProductModal updateData={updateData} modalType={modalType} categoryData={categoryQuery.data?.data} {...modalProps} />
-            {/* <UpdateModal
-                updateData={updateData}
-                visible={modalUpdate}
-                setVisible={setModalUpdate}
-                categoryData={categoryQuery.data?.data}
-            /> */}
+            <ProductModal updateData={updateData} t={t} modalType={modalType} categoryData={categoryQuery.data?.data} {...modalProps} />
         </>
     );
 };
 
-export default Category;
+export default Products;

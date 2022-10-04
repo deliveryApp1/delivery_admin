@@ -12,7 +12,7 @@ i18n
     .use(initReactI18next)
     .use(LanguageDetector)
     .init({
-        supportedLngs: ['uz', 'en'],
+        supportedLngs: ['uz', 'ru'],
         fallbackLng: "uz",
         interpolation: {
             escapeValue: false // not needed for react as it escapes by default

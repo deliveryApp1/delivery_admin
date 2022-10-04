@@ -1,13 +1,33 @@
 {
   "menus": {
-    "home": "Uy",
-    "posts": "Postlar",
+    "home": "Dashboard",
     "profile": "Profil",
-    "call": "Qo'ng'iroq",
     "categories": "Kategoriya",
     "products": "Mahsulotlar",
-    "discount": "Chegirmalar"
+    "discount": "Chegirmalar",
+    "users": "Foydalanuvchilar"
   },
+  "usersMenu": {
+    "users": "Foydalanuvchilar",
+    "username": "Foydalanuvchi nomi",
+    "phone_number": "Telefon raqami",
+    "role": "Rol",
+    "birthday": "Tug'ilgan kun"
+  },
+  "productsMenu": {
+    "name": "Nomi",
+    "description": "Tavsif",
+    "price": "Narxi",
+    "discount": "Chegirma",
+    "productName": "Mahsulot nomi",
+    "category": "Kategoriyasi"
+  },
+  "image": "Rasm",
+  "actions": "Amallar",
+  "delete": "O'chirish",
+  "yes": "Ha",
+  "no": "Yo'q",
+  "sureDelete": "Oʻchirishga ishonchingiz komilmi?",
   "close": "Yopish",
   "add": "Qo'shish",
   "edit": "Tahrirlash",
