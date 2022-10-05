@@ -17,9 +17,6 @@ const SideBar: React.FC<Props> = ({ collapsed, links }) => {
       collapsedWidth="50"
     >
       <Menu theme="dark" items={links}>
-        {/* {links.map(({ key, item }) => (
-          <Menu.Item key={key}>{item}</Menu.Item>
-        ))} */}
       </Menu>
     </Sider>
   );

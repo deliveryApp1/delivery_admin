@@ -1,6 +1,6 @@
+import { DiscountDTO } from 'types';
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "constants/url";
-import { DiscountDTO } from "types";
 
 export type GetDiscountType = {
   data: DiscountDTO[];

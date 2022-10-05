@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "constants/url";
-import { CategoryDTO } from "types";
+import { CategoryDTO } from 'types';
 
 export type GetCategoryType = {
   data: CategoryDTO[];

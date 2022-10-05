@@ -20,6 +20,7 @@ const Header: React.FC<Props> = ({ collapsed, setCollapsed }) => {
   const changeLanguage = (lng: string | undefined) => {
     i18n.changeLanguage(lng);
   };
+
   const languageMenu = (
     <Menu mode='vertical' selectedKeys={[currentLanguageCode]}
       items={[
@@ -31,11 +32,11 @@ const Header: React.FC<Props> = ({ collapsed, setCollapsed }) => {
           onClick: () => changeLanguage('uz')
         },
         {
-          key: 'en',
+          key: 'ru',
           label: (
-            "English"
+            "Русский"
           ),
-          onClick: () => changeLanguage('en')
+          onClick: () => changeLanguage('ru')
         },
       ]}
     />

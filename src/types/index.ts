@@ -1,5 +1,6 @@
 
-export * from './category';
-export * from './productTypes'
-export * from './discount';
+export * from './categoryTypes';
+export * from './productTypes';
+export * from './discountTypes';
+export * from './usersTypes';
 

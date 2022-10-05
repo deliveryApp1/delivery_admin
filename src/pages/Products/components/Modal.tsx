@@ -1,6 +1,5 @@
 import { useProductAddMutation, useProductUpdateMutation } from "store/endpoints";
 import { Form, message, Input, InputNumber, Upload, Select, ModalProps, Modal } from "antd";
-import { FormElements } from "components/index";
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import type { UploadChangeParam } from 'antd/es/upload';
 import { useDispatch } from 'react-redux';
@@ -15,6 +14,7 @@ type Props = ModalProps & {
     categoryData: any,
     updateData: any,
     modalType: string;
+    t: any
 };
 
 const formItemLayout = {
@@ -44,7 +44,7 @@ const beforeUpload = (file: RcFile) => {
     return isJpgOrPng && isLt2M;
 };
 
-const ProductModal: React.FC<Props> = ({ updateData, categoryData, modalType, ...modalProps }) => {
+const ProductModal: React.FC<Props> = ({ updateData, t, categoryData, modalType, ...modalProps }) => {
     const dispatch = useDispatch()
     const [loading, setLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState<string>();
@@ -58,7 +58,6 @@ const ProductModal: React.FC<Props> = ({ updateData, categoryData, modalType, ..
     }
     useEffect(() => {
         if (updateData && modalType === 'update') {
-            console.log('updateData: ', updateData);
             setImageUrl(`http://147.182.130.242:3000/${updateData?.image}`)
             form.setFieldsValue({
                 image: updateData?.image,
@@ -137,7 +136,7 @@ const ProductModal: React.FC<Props> = ({ updateData, categoryData, modalType, ..
         </div>
     );
     const categoryOptions = categoryData?.map((category: { id: any; name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (<Option key={category.id} value={category.id}>{category.name}</Option>))
-    const props = { onOk: handleSubmit, confirmLoading: modalType.length ? modalType === 'create' ? productCreate.isLoading : productUpdate.isLoading : false, ...modalProps }
+    const props = { onOk: handleSubmit, confirmLoading: modalType.length ? modalType === 'create' ? productCreate.isLoading : productUpdate.isLoading : false, forceRender: true, ...modalProps }
     return (
         <>
             <Modal
@@ -152,7 +151,7 @@ const ProductModal: React.FC<Props> = ({ updateData, categoryData, modalType, ..
                 >
                     <Form.Item
                         name='image'
-                        label='Rasm:'
+                        label={t("image")}
                         rules={[
                             { required: true, message: `Rasm yuklanmadi` },
                         ]}
@@ -172,16 +171,16 @@ const ProductModal: React.FC<Props> = ({ updateData, categoryData, modalType, ..
                     </Form.Item>
                     <Form.Item
                         name="name"
-                        label="Mahsulot nomi:"
+                        label={t("productsMenu.productName")}
                         rules={[
                             { required: true, message: `Mahsulot nomini kiriting` },
                         ]}
                     >
-                        <FormElements.Input placeholder="Nomini kiriting" />
+                        <Input placeholder="Nomini kiriting" />
                     </Form.Item>
                     <Form.Item
                         name="categoryId"
-                        label="Kategoriyasi:"
+                        label={t("productsMenu.category")}
                         rules={[
                             { required: true, message: `Kategoriyalar` },
                         ]}
@@ -192,7 +191,7 @@ const ProductModal: React.FC<Props> = ({ updateData, categoryData, modalType, ..
                     </Form.Item>
                     <Form.Item
                         name="description"
-                        label="Ta'rifi:"
+                        label={t("productsMenu.description")}
                         rules={[
                             { required: true, message: `Ta'rif kiriting` },
                         ]}
@@ -201,22 +200,22 @@ const ProductModal: React.FC<Props> = ({ updateData, categoryData, modalType, ..
                     </Form.Item>
                     <Form.Item
                         name="price"
-                        label="Narxi:"
+                        label={t("productsMenu.price")}
                         style={{ width: '100%' }}
                         rules={[
                             { required: true, message: `Narxni kiriting` },
                         ]}
                     >
-                        <InputNumber addonAfter="so'm" placeholder="1000" />
+                        <InputNumber addonAfter="so'm" placeholder="1000" style={{width: '100%'}} />
                     </Form.Item>
                     <Form.Item
                         name="discount"
-                        label="Chegirma:"
+                        label={t("productsMenu.discount")}
                         rules={[
                             { required: false, message: `Chegirma kiriting` },
                         ]}
                     >
-                        <InputNumber addonAfter="%" placeholder="5" />
+                        <InputNumber  addonAfter="%" placeholder="5" style={{width: '100%'}}   />
                     </Form.Item>
                 </Form>
             </Modal>

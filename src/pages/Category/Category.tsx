@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Button, Col, message, Row, TableColumnsType  , Popconfirm, Table} from "antd";
+import { Button, Col, message, Row, TableColumnsType, Popconfirm, Table } from "antd";
 import { Typography } from "antd";
 import { useCategoryDeleteMutation, useCategoryQuery } from "store/endpoints";
 import CategoryModal from "./_components/Modal";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "store/rootHooks";
 import { updateCategoryStates } from "store/slices/categorySlice";
-import { CategoryDTO } from "types/category";
+import { CategoryDTO } from "types/categoryTypes";
 
 const Category: React.FC = () => {
   const { t } = useTranslation()
@@ -16,7 +16,7 @@ const Category: React.FC = () => {
   const categoryQuery = useCategoryQuery();
   const [categoryDelete, { isLoading }] = useCategoryDeleteMutation();
   const [updateData, setUpdateData] = useState<CategoryDTO | undefined>({ name: "" });
-  const handleUpdate = (data: CategoryDTO ) => {
+  const handleUpdate = (data: CategoryDTO) => {
     setUpdateData(data);
     dispatch(updateCategoryStates({ openModal: true, modalType: 'update' }))
   };
@@ -63,16 +63,18 @@ const Category: React.FC = () => {
                 ghost
                 onClick={() => handleUpdate(item)}
               >
-              {t('edit')}
+                {t('edit')}
               </Button>
             </Col>
             <Col>
               <Popconfirm
+                okText={t("yes")}
+                cancelText={t("no")}
                 onConfirm={() => handleDelete(item.id)}
-                title="Oʻchirishga ishonchingiz komilmi?"
+                title={t("sureDelete")}
               >
                 <Button size="small" danger disabled={isLoading}>
-                {t('delete')}
+                  {t("delete")}
                 </Button>
               </Popconfirm>
             </Col>
@@ -85,32 +87,32 @@ const Category: React.FC = () => {
   const handleCloseModal = () => {
     dispatch(updateCategoryStates({ openModal: false, modalType: '' }))
     setUpdateData(undefined)
-}
+  }
 
   const modalProps = {
-    title: "Kategoriya qo'shish",
+    title: modalType === 'update' ? t('edit') : t('add'),
     open: openModal,
     okText: modalType === 'update' ? t('edit') : t('add'),
     cancelText: t('close'),
     onCancel: handleCloseModal
-}
+  }
 
 
   return (
     <>
       <Row>
-            <Col span={20}>
-                    <Typography.Title level={2}>{t('menus.products')}</Typography.Title>
-                </Col>
-                <Col span={4}>
-                    <Button
-                        type="primary"
-                        onClick={() => dispatch(updateCategoryStates({ openModal: true, modalType: 'create' }))}
-                    >
-                        {t('add')}
-                    </Button>
-                </Col>
-            </Row>
+        <Col span={20}>
+          <Typography.Title level={2}>{t('menus.category')}</Typography.Title>
+        </Col>
+        <Col span={4}>
+          <Button
+            type="primary"
+            onClick={() => dispatch(updateCategoryStates({ openModal: true, modalType: 'create' }))}
+          >
+            {t('add')}
+          </Button>
+        </Col>
+      </Row>
       <Table
         columns={columns}
         dataSource={categoryQuery.data?.data}

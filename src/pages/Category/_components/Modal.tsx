@@ -3,7 +3,7 @@ import { FC, useEffect } from 'react'
 import { useCategoryAddMutation, useCategoryUpdateMutation } from 'store/endpoints';
 import { useAppDispatch } from 'store/rootHooks';
 import { updateCategoryStates } from 'store/slices/categorySlice';
-import { CategoryDTO } from 'types/category';
+import { CategoryDTO } from 'types/categoryTypes';
 
 
 

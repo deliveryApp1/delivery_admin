@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Button, Col, Image, message, Row, Space, TableColumnsType } from "antd";
+import { Button, Col, Image, message, Popconfirm, Row, Table, TableColumnsType } from "antd";
 import { Typography } from "antd";
-import { PopConfirm, Table } from "components/index";
-import { DiscountDTO } from "types/discount";
+import { DiscountDTO } from "types/discountTypes";
 import { useDiscountDeleteMutation, useDiscountQuery } from "store/endpoints";
 import { updateDiscountStates } from "store/slices/discountSlice";
 import { useTranslation } from "react-i18next";
@@ -14,9 +13,9 @@ const Discount: React.FC = () => {
   const discountQuery = useDiscountQuery();
   const [discountDelete, { isLoading }] = useDiscountDeleteMutation();
   const { t } = useTranslation()
-  const { openModal, modalType } = useAppSelector(state=>state.discountSlice)
+  const { openModal, modalType } = useAppSelector(state => state.discountSlice)
   const dispatch = useAppDispatch()
-  const [updateData, setUpdateData] = useState<DiscountDTO| undefined>({title: '', description: '', image: ''});
+  const [updateData, setUpdateData] = useState<DiscountDTO | undefined>({ title: '', description: '', image: '' });
   const [page, setPage] = useState(1);
 
 
@@ -44,7 +43,7 @@ const Discount: React.FC = () => {
   };
 
 
-  
+
 
   const columns: TableColumnsType<DiscountDTO> = [
     {
@@ -59,12 +58,12 @@ const Discount: React.FC = () => {
       dataIndex: "image",
       key: "image",
       width: "5%",
-      render: (_ , record) => {
+      render: (_, record) => {
         return <Image
           width={30}
           height={30}
           src={`http://147.182.130.242:3000/${record.image}`}
-          />
+        />
       }
     },
     {
@@ -95,20 +94,22 @@ const Discount: React.FC = () => {
                 size="small"
                 type="primary"
                 ghost
-              onClick={() => handleUpdate(item)}
+                onClick={() => handleUpdate(item)}
               >
                 {t('edit')}
               </Button>
             </Col>
             <Col>
-              <PopConfirm
+              <Popconfirm
+                okText={t("yes")}
+                cancelText={t("no")}
                 onConfirm={() => handleDelete(item.id)}
-                title="Oʻchirishga ishonchingiz komilmi?"
+                title={t("sureDelete")}
               >
                 <Button size="small" danger disabled={isLoading}>
-                {t('delete')}
+                  {t("delete")}
                 </Button>
-              </PopConfirm>
+              </Popconfirm>
             </Col>
           </Row>
         );
@@ -119,31 +120,31 @@ const Discount: React.FC = () => {
 
 
   const handleCloseModal = () => {
-    dispatch(updateDiscountStates({ openModal: true, modalType: '' }));
+    dispatch(updateDiscountStates({ openModal: false, modalType: '' }));
     setUpdateData(undefined)
-}
+  }
 
-const modalProps = {
+  const modalProps = {
     title: "Diskont qo'shish",
     open: openModal,
     okText: modalType === 'update' ? t('edit') : t('add'),
     cancelText: t('close'),
     onCancel: handleCloseModal
-}
-  
+  }
+
 
   return (
     <>
       <Row>
         <Col span={20}>
-        <Typography.Title level={2}>{t('menus.products')}</Typography.Title>
+          <Typography.Title level={2}>{t('menus.discount')}</Typography.Title>
         </Col>
         <Col span={4}>
           <Button
             type="primary"
             onClick={() => dispatch(updateDiscountStates({ openModal: true, modalType: 'create' }))}
           >
-             {t('add')}
+            {t('add')}
           </Button>
         </Col>
       </Row>
@@ -160,7 +161,7 @@ const modalProps = {
         }}
       />
 
-      <DiscountModal updateData={updateData} modalType={modalType}  {...modalProps}/>
+      <DiscountModal updateData={updateData} modalType={modalType}  {...modalProps} />
     </>
   );
 };

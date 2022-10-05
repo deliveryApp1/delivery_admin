@@ -1,0 +1,40 @@
+{
+  "menus": {
+    "home": "Приборная доска",
+    "profile": "Профиль",
+    "categories": "Категории",
+    "products": "Товары",
+    "discount": "Скидки",
+    "users": "Пользователи"
+  },
+  "usersMenu": {
+    "users": "Пользователи",
+    "username": "Имя пользователя",
+    "phone_number": "Номер телефона",
+    "role": "Роль",
+    "birthday": "День рождения"
+  },
+  "productsMenu": {
+    "name": "Имя",
+    "description": "Описание",
+    "price": "Цена",
+    "discount": "Скидка",
+    "productName": "Наименование товара",
+    "category": "Категория"
+  },
+  "image": "Изображение",
+  "actions": "Действия",
+  "delete": "Удалить",
+  "yes": "Да",
+  "no": "Нет",
+  "sureDelete": "Вы уверены, что хотите удалить?",
+  "close": "Закрыть",
+  "add": "Добавить",
+  "edit": "Редактировать",
+  "login": "Sign in",
+  "user": "User",
+  "logout": "Sign out",
+  "lan": "Язык",
+  "chat": "Chat",
+  "confirm_signout": "Are you sure you want to leave?"
+}

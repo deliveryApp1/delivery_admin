@@ -5,7 +5,7 @@ import type { UploadChangeParam } from 'antd/es/upload';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import React, { useState, useEffect } from 'react';
 import { updateDiscountStates } from "store/slices/discountSlice";
-import { DiscountDTO } from "types/discount";
+import { DiscountDTO } from "types/discountTypes";
 import { useAppDispatch } from "store/rootHooks";
 
 
