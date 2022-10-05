@@ -10,19 +10,21 @@ import DiscountModal from "./_components/Modal";
 
 
 const Discount: React.FC = () => {
-  const discountQuery = useDiscountQuery();
   const [discountDelete, { isLoading }] = useDiscountDeleteMutation();
   const { t } = useTranslation()
   const { openModal, modalType } = useAppSelector(state => state.discountSlice)
   const dispatch = useAppDispatch()
   const [updateData, setUpdateData] = useState<DiscountDTO | undefined>({ title: '', description: '', image: '' });
   const [page, setPage] = useState(1);
+  const discountQuery = useDiscountQuery();
 
 
   function onChange(page: number) {
     setPage(page);
+    
   }
-
+  
+  console.log(discountQuery.data?.meta);
   const handleUpdate = (data: DiscountDTO) => {
     setUpdateData(data);
     dispatch(updateDiscountStates({ openModal: true, modalType: 'update' }))
@@ -154,11 +156,11 @@ const Discount: React.FC = () => {
         loading={discountQuery.isFetching}
         pagination={{
           total: discountQuery.data?.data.length,
-          pageSize: 10,
+          pageSize: 5,
           current: page,
           onChange: (e) => onChange(e),
           showSizeChanger: false,
-        }}
+        }} 
       />
 
       <DiscountModal updateData={updateData} modalType={modalType}  {...modalProps} />

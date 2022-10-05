@@ -4,7 +4,8 @@ import { baseUrl } from "constants/url";
 
 export type GetDiscountType = {
   data: DiscountDTO[];
-  statusCode: number
+  statusCode: number,
+  meta: {page: number, total: number, pagesize: number}
 };
 export const discountApi = createApi({
   refetchOnReconnect: true,
