@@ -2,28 +2,31 @@ import React, { useState } from "react";
 import { Button, Col, Image, message, Row, Space, TableColumnsType } from "antd";
 import { Typography } from "antd";
 import { PopConfirm, Table } from "components/index";
-import ModalCreate from "./_components/ModalCreate/ModalCreate";
-import ModalUpdate from "./_components/ModalUpdate/ModalUpdate";
 import { DiscountDTO } from "types/discount";
-import { useNavigate } from "react-router-dom";
 import { useDiscountDeleteMutation, useDiscountQuery } from "store/endpoints";
+import { updateDiscountStates } from "store/slices/discountSlice";
+import { useTranslation } from "react-i18next";
+import { useAppDispatch, useAppSelector } from "store/rootHooks";
+import DiscountModal from "./_components/Modal";
+
 
 const Discount: React.FC = () => {
   const discountQuery = useDiscountQuery();
   const [discountDelete, { isLoading }] = useDiscountDeleteMutation();
-  const [modalCreate, setModalCreate] = useState<boolean>(false);
-  const [modalUpdate, setModalUpdate] = useState<boolean>(false);
-  const [updateData, setUpdateData] = useState<DiscountDTO>({title: '', description: '', image: ''});
+  const { t } = useTranslation()
+  const { openModal, modalType } = useAppSelector(state=>state.discountSlice)
+  const dispatch = useAppDispatch()
+  const [updateData, setUpdateData] = useState<DiscountDTO| undefined>({title: '', description: '', image: ''});
   const [page, setPage] = useState(1);
-  const history = useNavigate();
+
 
   function onChange(page: number) {
     setPage(page);
   }
 
   const handleUpdate = (data: DiscountDTO) => {
-    setModalUpdate(true);
     setUpdateData(data);
+    dispatch(updateDiscountStates({ openModal: true, modalType: 'update' }))
   };
 
 
@@ -40,6 +43,9 @@ const Discount: React.FC = () => {
       });
   };
 
+
+  
+
   const columns: TableColumnsType<DiscountDTO> = [
     {
       title: "№",
@@ -53,7 +59,7 @@ const Discount: React.FC = () => {
       dataIndex: "image",
       key: "image",
       width: "5%",
-      render: (item, record) => {
+      render: (_ , record) => {
         return <Image
           width={30}
           height={30}
@@ -91,7 +97,7 @@ const Discount: React.FC = () => {
                 ghost
               onClick={() => handleUpdate(item)}
               >
-                Edit
+                {t('edit')}
               </Button>
             </Col>
             <Col>
@@ -100,7 +106,7 @@ const Discount: React.FC = () => {
                 title="Oʻchirishga ishonchingiz komilmi?"
               >
                 <Button size="small" danger disabled={isLoading}>
-                  Delete
+                {t('delete')}
                 </Button>
               </PopConfirm>
             </Col>
@@ -110,20 +116,34 @@ const Discount: React.FC = () => {
     },
   ];
 
+
+
+  const handleCloseModal = () => {
+    dispatch(updateDiscountStates({ openModal: true, modalType: '' }));
+    setUpdateData(undefined)
+}
+
+const modalProps = {
+    title: "Diskont qo'shish",
+    open: openModal,
+    okText: modalType === 'update' ? t('edit') : t('add'),
+    cancelText: t('close'),
+    onCancel: handleCloseModal
+}
   
 
   return (
     <>
       <Row>
         <Col span={20}>
-          <Typography.Title level={2}>Kategoriyalar</Typography.Title>
+        <Typography.Title level={2}>{t('menus.products')}</Typography.Title>
         </Col>
         <Col span={4}>
           <Button
             type="primary"
-            onClick={() => setModalCreate((prev) => !prev)}
+            onClick={() => dispatch(updateDiscountStates({ openModal: true, modalType: 'create' }))}
           >
-            Yaratish
+             {t('add')}
           </Button>
         </Col>
       </Row>
@@ -139,12 +159,8 @@ const Discount: React.FC = () => {
           showSizeChanger: false,
         }}
       />
-      <ModalCreate visible={modalCreate} setVisible={setModalCreate} />
-      <ModalUpdate
-        updateData={updateData}
-        visible={modalUpdate}
-        setVisible={setModalUpdate}
-      />
+
+      <DiscountModal updateData={updateData} modalType={modalType}  {...modalProps}/>
     </>
   );
 };

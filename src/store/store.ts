@@ -10,7 +10,7 @@ const store = configureStore({
     [appApi.reducerPath]: appApi.reducer,
     [discountApi.reducerPath]: discountApi.reducer,
     ...reducer
-    // filters: filtersSlice.reducer,
+  
   },
 
   middleware: (getDefaultMiddleware) =>

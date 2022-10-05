@@ -1,30 +1,32 @@
 import React, { useState } from "react";
-import { Button, Col, message, Row, TableColumnsType } from "antd";
+import { Button, Col, message, Row, TableColumnsType  , Popconfirm, Table} from "antd";
 import { Typography } from "antd";
-import { PopConfirm, Table } from "components/index";
-import ModalCreate from "./_components/ModalCreate/ModalCreate";
-import { CategoryDTO } from "types/category";
-import ModalUpdate from "./_components/ModalUpdate/ModalUpdate";
 import { useCategoryDeleteMutation, useCategoryQuery } from "store/endpoints";
+import CategoryModal from "./_components/Modal";
+import { useTranslation } from "react-i18next";
+import { useAppDispatch, useAppSelector } from "store/rootHooks";
+import { updateCategoryStates } from "store/slices/categorySlice";
+import { CategoryDTO } from "types/category";
 
 const Category: React.FC = () => {
+  const { t } = useTranslation()
+  const { openModal, modalType } = useAppSelector(state => state.categorySlice)
+  const dispatch = useAppDispatch()
+
   const categoryQuery = useCategoryQuery();
   const [categoryDelete, { isLoading }] = useCategoryDeleteMutation();
-  const [modalCreate, setModalCreate] = useState<boolean>(false);
-  const [modalUpdate, setModalUpdate] = useState<boolean>(false);
-  const [updateData, setUpdateData] = useState<CategoryDTO>({ name: "" });
-
-  const handleUpdate = (data: CategoryDTO) => {
-    setModalUpdate(true);
+  const [updateData, setUpdateData] = useState<CategoryDTO | undefined>({ name: "" });
+  const handleUpdate = (data: CategoryDTO ) => {
     setUpdateData(data);
+    dispatch(updateCategoryStates({ openModal: true, modalType: 'update' }))
   };
+
   const handleDelete = (id: number | undefined) => {
     const category = categoryDelete({ id }).unwrap();
     category
       .then((res) => {
         if (res.statusCode === 200) {
           message.success("Muvaffaqiyati o'chirildi.");
-          setModalUpdate(false);
         }
       })
       .catch((err) => {
@@ -38,7 +40,7 @@ const Category: React.FC = () => {
       dataIndex: "id",
       key: "id",
       width: "5%",
-      render: (item, record, index) => <span>{index + 1}</span>,
+      render: (_, __, index) => <span>{index + 1}</span>,
     },
     {
       title: "Nomi",
@@ -51,7 +53,7 @@ const Category: React.FC = () => {
       title: "Amallar",
       key: "action",
       width: "20%",
-      render: (item: CategoryDTO, record, index) => {
+      render: (item: CategoryDTO) => {
         return (
           <Row wrap={false} gutter={5}>
             <Col>
@@ -61,18 +63,18 @@ const Category: React.FC = () => {
                 ghost
                 onClick={() => handleUpdate(item)}
               >
-                Edit
+              {t('edit')}
               </Button>
             </Col>
             <Col>
-              <PopConfirm
+              <Popconfirm
                 onConfirm={() => handleDelete(item.id)}
                 title="Oʻchirishga ishonchingiz komilmi?"
               >
                 <Button size="small" danger disabled={isLoading}>
-                  Delete
+                {t('delete')}
                 </Button>
-              </PopConfirm>
+              </Popconfirm>
             </Col>
           </Row>
         );
@@ -80,35 +82,43 @@ const Category: React.FC = () => {
     },
   ];
 
+  const handleCloseModal = () => {
+    dispatch(updateCategoryStates({ openModal: false, modalType: '' }))
+    setUpdateData(undefined)
+}
+
+  const modalProps = {
+    title: "Kategoriya qo'shish",
+    open: openModal,
+    okText: modalType === 'update' ? t('edit') : t('add'),
+    cancelText: t('close'),
+    onCancel: handleCloseModal
+}
+
+
   return (
     <>
       <Row>
-        <Col span={20}>
-          <Typography.Title level={2}>Kategoriyalar</Typography.Title>
-        </Col>
-        <Col span={4}>
-          <Button
-            type="primary"
-            onClick={() => setModalCreate((prev) => !prev)}
-          >
-            Yaratish
-          </Button>
-        </Col>
-      </Row>
-
+            <Col span={20}>
+                    <Typography.Title level={2}>{t('menus.products')}</Typography.Title>
+                </Col>
+                <Col span={4}>
+                    <Button
+                        type="primary"
+                        onClick={() => dispatch(updateCategoryStates({ openModal: true, modalType: 'create' }))}
+                    >
+                        {t('add')}
+                    </Button>
+                </Col>
+            </Row>
       <Table
         columns={columns}
         dataSource={categoryQuery.data?.data}
         loading={categoryQuery.isFetching}
         pagination={{ defaultPageSize: 5 }}
-        rowKey={record => record.id}
       />
-      <ModalCreate visible={modalCreate} setVisible={setModalCreate} />
-      <ModalUpdate
-        updateData={updateData}
-        visible={modalUpdate}
-        setVisible={setModalUpdate}
-      />
+
+      <CategoryModal updateData={updateData} modalType={modalType} {...modalProps} />
     </>
   );
 };

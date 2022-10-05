@@ -18,9 +18,9 @@ function App() {
           <Route path="/products" element={<ProductPage />} />
           <Route path="/discount" element={<DiscountPage />} />
           <Route path="*" element={<NotFound />} />
-        </Routes >
-      </Suspense >
-    </Layout >
+        </Routes>
+      </Suspense>
+    </Layout>
   );
 }
 
