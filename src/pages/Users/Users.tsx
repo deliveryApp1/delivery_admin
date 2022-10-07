@@ -5,9 +5,9 @@ import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
 import UsersModal from "./components/Modal";
 import { UsersDTO } from "types";
-import { useUsersDeleteMutation, useUsersQuery, useCategoryQuery } from "store/endpoints";
+import { useUsersDeleteMutation, useUsersQuery } from "store/endpoints";
 import { useSelector, useDispatch } from 'react-redux';
-import { updateUsersStates } from "./usersSlice";
+import { updateUsersStates } from "../../store/slices/usersSlice";
 
 interface DataType {
     key?: string;
@@ -22,12 +22,14 @@ const Users: React.FC = () => {
     const { t } = useTranslation()
     const { openModal, modalType } = useSelector((state: RootState) => state.usersSlice)
     const dispatch = useDispatch()
+    const [query, setQuery] = useState({ page: 1, pageSize: 20 })
 
-    const categoryQuery = useCategoryQuery();
-    const usersQuery = useUsersQuery();
+    const usersQuery = useUsersQuery(query);
     const [usersDelete, { isLoading }] = useUsersDeleteMutation();
     const [updateData, setUpdateData] = useState();
     const handleUpdate = (data: any) => {
+        console.log('data: ', data);
+
         setUpdateData(data);
         dispatch(updateUsersStates({ openModal: true, modalType: 'update' }))
     };
@@ -135,6 +137,19 @@ const Users: React.FC = () => {
         onCancel: handleCloseModal
     }
 
+    const pagination =
+    {
+        total: usersQuery.data?.meta?.total * usersQuery.data?.meta?.pagesize,
+        page: query.page,
+        pageSizeOptions: ["20", "50", "100"],
+        showQuickJumper: true, showSizeChanger: true,
+        pageSize: query.pageSize,
+        current: query.page,
+        onChange: (page: number, pageSize: number) => {
+            setQuery({ page: page, pageSize: pageSize })
+        }
+    }
+
     return (
         <>
             <Row>
@@ -155,10 +170,10 @@ const Users: React.FC = () => {
                 columns={columns}
                 dataSource={usersQuery.data?.data}
                 loading={usersQuery.isFetching}
-                pagination={{ defaultPageSize: 5 }}
+                pagination={pagination}
                 rowKey={record => record.id}
             />
-            <UsersModal updateData={updateData} t={t} modalType={modalType} categoryData={categoryQuery.data?.data} {...modalProps} />
+            <UsersModal updateData={updateData} t={t} modalType={modalType} {...modalProps} />
         </>
     );
 };

@@ -5,12 +5,11 @@ import { Form, message, Input, InputNumber, Select, ModalProps, Modal, DatePicke
 import { useDispatch } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 import { roles, dateFormat, disabledDateStart } from 'constants/constants';
-import { updateUsersStates } from "../usersSlice";
+import { updateUsersStates } from "../../../store/slices/usersSlice";
 
 const { Option } = Select;
 
 type Props = ModalProps & {
-    categoryData: any,
     updateData: any,
     modalType: string;
     t: any
@@ -25,7 +24,7 @@ const formItemLayout = {
     },
 }
 
-const UsersModal: React.FC<Props> = ({ updateData, t, categoryData, modalType, ...modalProps }) => {
+const UsersModal: React.FC<Props> = ({ updateData, t, modalType, ...modalProps }) => {
     const dispatch = useDispatch()
     const [form] = Form.useForm();
     const [birthday, setBirthday] = useState<string>()
@@ -38,12 +37,12 @@ const UsersModal: React.FC<Props> = ({ updateData, t, categoryData, modalType, .
         if (updateData && modalType === 'update') {
             console.log('updateData: ', updateData);
             form.setFieldsValue({
-                image: updateData?.image,
-                name: updateData?.name,
-                categoryId: updateData?.categoryId,
-                description: updateData?.description,
+                username: updateData?.username,
+                password: updateData.password,
+                phone: updateData?.phone,
+                role: updateData?.role,
                 price: updateData?.price,
-                discount: updateData?.discount
+                // birthday: updateData?.birthday
             })
         }
         return () => clearState()

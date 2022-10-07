@@ -5,17 +5,18 @@ import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
 import ProductModal from "./components/Modal";
 import { ProductDTO } from "types";
-import { useProductDeleteMutation, useProductQuery, useCategoryQuery } from "store/endpoints";
+import { useProductDeleteMutation, useProductQuery, useCategoryListQuery } from "store/endpoints";
 import { useSelector, useDispatch } from 'react-redux';
-import { updateProductStates } from "./productSlice";
+import { updateProductStates } from "../../store/slices/productSlice";
 
 const Products: React.FC = () => {
     const { t } = useTranslation()
     const { openModal, modalType } = useSelector((state: RootState) => state.productSlice)
     const dispatch = useDispatch()
+    const [query, setQuery] = useState({ page: 1, pageSize: 20 })
 
-    const categoryQuery = useCategoryQuery();
-    const productQuery = useProductQuery();
+    const categoryQuery = useCategoryListQuery();
+    const productQuery = useProductQuery(query);
     const [productDelete, { isLoading }] = useProductDeleteMutation();
     const [updateData, setUpdateData] = useState();
     const handleUpdate = (data: any) => {
@@ -118,6 +119,19 @@ const Products: React.FC = () => {
         setUpdateData(undefined)
     }
 
+    const pagination =
+    {
+        total: productQuery.data?.meta?.total * productQuery.data?.meta?.pagesize,
+        page: query.page,
+        pageSizeOptions: ["20", "50", "100"],
+        showQuickJumper: true, showSizeChanger: true,
+        pageSize: query.pageSize,
+        current: query.page,
+        onChange: (page: number, pageSize: number) => {
+            setQuery({ page: page, pageSize: pageSize })
+        }
+    }
+
     const modalProps = {
         title: modalType === 'update' ? t('edit') : t('add'),
         open: openModal,
@@ -146,8 +160,8 @@ const Products: React.FC = () => {
                 columns={columns}
                 dataSource={productQuery.data?.data}
                 loading={productQuery.isFetching}
-                pagination={{ defaultPageSize: 5 }}
                 rowKey={record => record.id}
+                pagination={pagination}
             />
             <ProductModal updateData={updateData} t={t} modalType={modalType} categoryData={categoryQuery.data?.data} {...modalProps} />
         </>

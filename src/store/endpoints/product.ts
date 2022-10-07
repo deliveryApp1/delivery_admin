@@ -1,11 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "constants/url";
-import { ProductDTO } from "types/productTypes";
+import { ProductDTO, MetaDTO } from "types";
 
 export type GetProductType = {
     data: ProductDTO[];
+    meta: MetaDTO;
     statusCode: number
 };
+
 export const productApi = createApi({
     refetchOnReconnect: true,
     reducerPath: `product`,
@@ -16,9 +18,10 @@ export const productApi = createApi({
 
     endpoints: (builder) => ({
         // Queries
-        product: builder.query<GetProductType, void>({
-            query: () => ({
-                url: "/product",
+        product: builder.query<any, { page?: number, pageSize?: number }>({
+            query: (query) => ({
+                url: `/product`,
+                params: { page: query.page, pagesize: query.pageSize }
             }),
             providesTags: ["Product"],
         }),
@@ -36,7 +39,7 @@ export const productApi = createApi({
 
         productUpdate: builder.mutation<
             GetProductType,
-            { id: number | undefined; value: { name: string } | undefined }
+            { id: number; value: { name: string } | undefined }
         >({
             query: ({ id, value }) => ({
                 url: `/product/${id}`,

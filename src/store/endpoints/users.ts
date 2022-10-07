@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "constants/url";
-import { UsersDTO } from "types";
+import { UsersDTO, MetaDTO } from "types";
 
 export type GetUsersType = {
     data: UsersDTO[];
+    meta: MetaDTO;
     statusCode: number
 };
 export const usersApi = createApi({
@@ -16,9 +17,10 @@ export const usersApi = createApi({
 
     endpoints: (builder) => ({
         // Queries
-        users: builder.query<GetUsersType, void>({
-            query: () => ({
+        users: builder.query<any, { page?: number, pageSize?: number }>({
+            query: (query) => ({
                 url: "/user",
+                params: { page: query.page, pagesize: query.pageSize }
             }),
             providesTags: ["Users"],
         }),

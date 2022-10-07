@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Col, message, Row, TableColumnsType, Popconfirm, Table } from "antd";
+import { Button, Col, message, Row, TableColumnsType, Popconfirm, Table, Layout } from "antd";
 import { Typography } from "antd";
 import { useCategoryDeleteMutation, useCategoryQuery } from "store/endpoints";
 import CategoryModal from "./_components/Modal";
@@ -12,8 +12,8 @@ const Category: React.FC = () => {
   const { t } = useTranslation()
   const { openModal, modalType } = useAppSelector(state => state.categorySlice)
   const dispatch = useAppDispatch()
-
-  const categoryQuery = useCategoryQuery();
+  const [query, setQuery] = useState({ page: 1, pageSize: 20 })
+  const categoryQuery = useCategoryQuery(query);
   const [categoryDelete, { isLoading }] = useCategoryDeleteMutation();
   const [updateData, setUpdateData] = useState<CategoryDTO | undefined>({ name: "" });
   const handleUpdate = (data: CategoryDTO) => {
@@ -97,31 +97,45 @@ const Category: React.FC = () => {
     onCancel: handleCloseModal
   }
 
+  const pagination =
+  {
+    total: categoryQuery.data?.meta?.total * categoryQuery.data?.meta?.pagesize,
+    page: query.page,
+    pageSizeOptions: ["20", "50", "100"],
+    showQuickJumper: true, showSizeChanger: true,
+    pageSize: query.pageSize,
+    current: query.page,
+    onChange: (page: number, pageSize: number) => {
+      setQuery({ page: page, pageSize: pageSize })
+    }
+  }
 
   return (
-    <>
-      <Row>
-        <Col span={20}>
-          <Typography.Title level={2}>{t('menus.category')}</Typography.Title>
-        </Col>
-        <Col span={4}>
-          <Button
-            type="primary"
-            onClick={() => dispatch(updateCategoryStates({ openModal: true, modalType: 'create' }))}
-          >
-            {t('add')}
-          </Button>
-        </Col>
-      </Row>
-      <Table
-        columns={columns}
-        dataSource={categoryQuery.data?.data}
-        loading={categoryQuery.isFetching}
-        pagination={{ defaultPageSize: 5 }}
-      />
+    <Layout>
+      <Layout.Content>
+        <Row>
+          <Col span={20}>
+            <Typography.Title level={2}>{t('menus.categories')}</Typography.Title>
+          </Col>
+          <Col span={4}>
+            <Button
+              type="primary"
+              onClick={() => dispatch(updateCategoryStates({ openModal: true, modalType: 'create' }))}
+            >
+              {t('add')}
+            </Button>
+          </Col>
+        </Row>
+        <Table
+          columns={columns}
+          dataSource={categoryQuery.data?.data}
+          loading={categoryQuery.isFetching}
+          pagination={pagination}
+        />
 
-      <CategoryModal updateData={updateData} modalType={modalType} {...modalProps} />
-    </>
+        <CategoryModal updateData={updateData} modalType={modalType} {...modalProps} />
+      </Layout.Content>
+    </Layout>
   );
 };
 

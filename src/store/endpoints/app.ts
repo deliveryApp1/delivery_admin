@@ -17,6 +17,12 @@ export const appApi = createApi({
             }),
             providesTags: ["app"],
         }),
+        categoryList: builder.query<any, void>({
+            query: () => ({
+                url: "/category",
+            }),
+            providesTags: ["app"],
+        }),
 
         // Mutations
 
@@ -57,6 +63,7 @@ export const appApi = createApi({
 });
 
 export const {
+    useCategoryListQuery,
     useAppQuery,
     useAppAddMutation,
     useImageUploadMutation,

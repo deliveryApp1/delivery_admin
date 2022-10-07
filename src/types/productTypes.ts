@@ -1,5 +1,5 @@
 export type ProductDTO = {
-    id?: number;
+    id: number;
     createdAt?: string;
     updatedAt?: string;
     name: string;
@@ -8,4 +8,5 @@ export type ProductDTO = {
     description: string;
     price: number;
     discount: number;
+    meta: Object;
 };

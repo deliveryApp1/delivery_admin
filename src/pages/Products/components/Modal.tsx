@@ -5,7 +5,7 @@ import type { UploadChangeParam } from 'antd/es/upload';
 import { useDispatch } from 'react-redux';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import React, { useState, useEffect } from 'react';
-import { updateProductStates } from "../productSlice";
+import { updateProductStates } from "../../../store/slices/productSlice";
 
 const { TextArea } = Input
 const { Option } = Select;
@@ -206,7 +206,7 @@ const ProductModal: React.FC<Props> = ({ updateData, t, categoryData, modalType,
                             { required: true, message: `Narxni kiriting` },
                         ]}
                     >
-                        <InputNumber addonAfter="so'm" placeholder="1000" style={{width: '100%'}} />
+                        <InputNumber addonAfter="so'm" placeholder="1000" style={{ width: '100%' }} />
                     </Form.Item>
                     <Form.Item
                         name="discount"
@@ -215,7 +215,7 @@ const ProductModal: React.FC<Props> = ({ updateData, t, categoryData, modalType,
                             { required: false, message: `Chegirma kiriting` },
                         ]}
                     >
-                        <InputNumber  addonAfter="%" placeholder="5" style={{width: '100%'}}   />
+                        <InputNumber addonAfter="%" placeholder="5" style={{ width: '100%' }} />
                     </Form.Item>
                 </Form>
             </Modal>

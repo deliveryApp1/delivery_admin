@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "constants/url";
-import { CategoryDTO } from 'types';
+import { CategoryDTO, MetaDTO } from 'types';
 
 export type GetCategoryType = {
   data: CategoryDTO[];
+  meta: MetaDTO;
   statusCode: number
 };
 export const categoryApi = createApi({
@@ -16,10 +17,15 @@ export const categoryApi = createApi({
 
   endpoints: (builder) => ({
     // Queries
-    category: builder.query<GetCategoryType, void>({
-      query: () => ({
-        url: "/category",
-      }),
+    category: builder.query<any, { page?: number, pageSize?: number }>({
+      query: (arg) => {
+        const { page, pageSize } = arg
+        console.log('arg: ', arg)
+        return {
+          url: `/category`,
+          params: { page, pagesize: pageSize }
+        }
+      },
       providesTags: ["Category"],
     }),
 
@@ -36,7 +42,7 @@ export const categoryApi = createApi({
 
     categoryUpdate: builder.mutation<
       GetCategoryType,
-      { id: number | undefined; value:{name:string} | undefined }
+      { id: number | undefined; value: { name: string } | undefined }
     >({
       query: ({ id, value }) => ({
         url: `/category/${id}`,
@@ -46,8 +52,8 @@ export const categoryApi = createApi({
       invalidatesTags: ["Category"],
     }),
 
-    categoryDelete: builder.mutation<GetCategoryType, { id: number | undefined}>({
-      query: ({id}) => ({
+    categoryDelete: builder.mutation<GetCategoryType, { id: number | undefined }>({
+      query: ({ id }) => ({
         url: `/category/${id}`,
         method: 'DELETE',
       }),

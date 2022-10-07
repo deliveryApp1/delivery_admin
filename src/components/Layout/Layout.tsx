@@ -3,6 +3,7 @@ import { Col, Layout as AntdLayout, Row } from "antd";
 import { useTranslation } from 'react-i18next';
 import React, { ReactNode, useMemo, useState } from "react";
 import { SideBar, Header, NavLink } from "..";
+import './Layout.css'
 
 const { Content } = AntdLayout;
 
@@ -93,11 +94,12 @@ const Layout: React.FC<Props> = ({ children }) => {
   return (
     <AntdLayout style={{ height: "100vh", overflow: 'hidden' }}>
       <SideBar links={links} collapsed={collapsed} />
-      <AntdLayout>
+      <AntdLayout className='main-laydisplay: flex; justify-content: space-between;out-app'>
         <Header collapsed={collapsed} setCollapsed={setCollapsed} />
         <Content
           style={{
-            padding: 24,
+            padding: 24, overflow: 'auto',
+            height: '100vh'
           }}
         >
           {children}
