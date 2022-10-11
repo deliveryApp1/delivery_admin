@@ -3,7 +3,7 @@ import type { RootState } from '../../store/store'
 import { Button, Col, message, Row, Image, Space, Typography, Table, Popconfirm } from "antd";
 import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
-import ProductModal from "./components/Modal";
+import ProductModal from "./_components/Modal";
 import { ProductDTO } from "types";
 import { useProductDeleteMutation, useProductQuery, useCategoryListQuery } from "store/endpoints";
 import { useSelector, useDispatch } from 'react-redux';

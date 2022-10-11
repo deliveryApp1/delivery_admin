@@ -3,8 +3,10 @@ import type { RootState } from '../../store/store'
 import { Button, Col, message, Row, Typography, Table, Popconfirm } from "antd";
 import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
-import UsersModal from "./components/Modal";
+import UsersModal from "./_components/Modal";
 import { UsersDTO } from "types";
+import moment from "moment";
+import { dateFormat } from "constants/constants";
 import { useUsersDeleteMutation, useUsersQuery } from "store/endpoints";
 import { useSelector, useDispatch } from 'react-redux';
 import { updateUsersStates } from "../../store/slices/usersSlice";
@@ -28,8 +30,6 @@ const Users: React.FC = () => {
     const [usersDelete, { isLoading }] = useUsersDeleteMutation();
     const [updateData, setUpdateData] = useState();
     const handleUpdate = (data: any) => {
-        console.log('data: ', data);
-
         setUpdateData(data);
         dispatch(updateUsersStates({ openModal: true, modalType: 'update' }))
     };
@@ -88,7 +88,7 @@ const Users: React.FC = () => {
             dataIndex: "birthday",
             key: "birthday",
             // width: "75%",
-            render: (item, record) => <>{item}</>
+            render: (item, record) => <>{moment(item).format(dateFormat)}</>
         },
         {
             title: t("actions"),

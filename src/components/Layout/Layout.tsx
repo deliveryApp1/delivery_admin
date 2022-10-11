@@ -1,4 +1,4 @@
-import { HomeOutlined, ShopOutlined, AppstoreOutlined, UserOutlined } from "@ant-design/icons";
+import { HomeOutlined, ShopOutlined, AppstoreOutlined, UserOutlined, UnorderedListOutlined } from "@ant-design/icons";
 import { Col, Layout as AntdLayout, Row } from "antd";
 import { useTranslation } from 'react-i18next';
 import React, { ReactNode, useMemo, useState } from "react";
@@ -76,6 +76,19 @@ const Layout: React.FC<Props> = ({ children }) => {
       },
       {
         key: "5",
+        label: (
+          <NavLink to={"/orders"}>
+            <Row align="middle" wrap={false} gutter={20}>
+              <Col>
+                <UnorderedListOutlined />
+              </Col>
+              <Col>{t('menus.orders')}</Col>
+            </Row>
+          </NavLink>
+        )
+      },
+      {
+        key: "6",
         label: (
           <NavLink to={"/users"}>
             <Row align="middle" wrap={false} gutter={20}>

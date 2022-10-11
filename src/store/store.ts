@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
-import { appApi, categoryApi, discountApi, productApi, usersApi } from './endpoints';
+import { appApi, categoryApi, discountApi, productApi, usersApi, orderApi } from './endpoints';
 import reducer from './rootReducer';
 
 const store = configureStore({
@@ -10,8 +10,9 @@ const store = configureStore({
     [appApi.reducerPath]: appApi.reducer,
     [discountApi.reducerPath]: discountApi.reducer,
     [usersApi.reducerPath]: usersApi.reducer,
+    [orderApi.reducerPath]: orderApi.reducer,
     ...reducer
-  
+
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -21,6 +22,7 @@ const store = configureStore({
       .concat(categoryApi.middleware)
       .concat(discountApi.middleware)
       .concat(usersApi.middleware)
+      .concat(orderApi.middleware)
 });
 
 setupListeners(store.dispatch);
