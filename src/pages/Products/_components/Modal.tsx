@@ -1,5 +1,5 @@
 import { useProductAddMutation, useProductUpdateMutation } from "store/endpoints";
-import { Form, message, Input, InputNumber, Upload, Select, ModalProps, Modal } from "antd";
+import { Form, message, Input, InputNumber, Upload, Select, ModalProps, Modal, Switch } from "antd";
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import type { UploadChangeParam } from 'antd/es/upload';
 import { useDispatch } from 'react-redux';
@@ -58,6 +58,7 @@ const ProductModal: React.FC<Props> = ({ updateData, t, categoryData, modalType,
     }
     useEffect(() => {
         if (updateData && modalType === 'update') {
+            console.log("updateData: ", updateData);
             setImageUrl(`http://147.182.130.242:3000/${updateData?.image}`)
             form.setFieldsValue({
                 image: updateData?.image,
@@ -65,7 +66,8 @@ const ProductModal: React.FC<Props> = ({ updateData, t, categoryData, modalType,
                 categoryId: updateData?.categoryId,
                 description: updateData?.description,
                 price: updateData?.price,
-                discount: updateData?.discount
+                discount: updateData?.discount,
+                isHave: updateData?.isHave
             })
         }
         return () => clearState()
@@ -172,7 +174,7 @@ const ProductModal: React.FC<Props> = ({ updateData, t, categoryData, modalType,
                         name="name"
                         label={t("productsMenu.productName")}
                         rules={[
-                            { required: true, message: `Mahsulot nomini kiriting` },
+                            { required: true, message: t('fieldErrorMessage') },
                         ]}
                     >
                         <Input placeholder="Nomini kiriting" />
@@ -181,7 +183,7 @@ const ProductModal: React.FC<Props> = ({ updateData, t, categoryData, modalType,
                         name="categoryId"
                         label={t("productsMenu.category")}
                         rules={[
-                            { required: true, message: `Kategoriyalar` },
+                            { required: true, message: t('fieldErrorMessage') },
                         ]}
                     >
                         <Select allowClear placeholder='Kategoriyani tanlang'>
@@ -192,7 +194,7 @@ const ProductModal: React.FC<Props> = ({ updateData, t, categoryData, modalType,
                         name="description"
                         label={t("productsMenu.description")}
                         rules={[
-                            { required: true, message: `Ta'rif kiriting` },
+                            { required: true, message: t('fieldErrorMessage') },
                         ]}
                     >
                         <TextArea allowClear autoSize placeholder="Ta'rifni kiriting" />
@@ -202,7 +204,7 @@ const ProductModal: React.FC<Props> = ({ updateData, t, categoryData, modalType,
                         label={t("productsMenu.price")}
                         style={{ width: '100%' }}
                         rules={[
-                            { required: true, message: `Narxni kiriting` },
+                            { required: true, message: t('fieldErrorMessage') },
                         ]}
                     >
                         <InputNumber addonAfter="so'm" placeholder="1000" style={{ width: '100%' }} />
@@ -211,10 +213,19 @@ const ProductModal: React.FC<Props> = ({ updateData, t, categoryData, modalType,
                         name="discount"
                         label={t("productsMenu.discount")}
                         rules={[
-                            { required: false, message: `Chegirma kiriting` },
+                            { required: true, message: t('fieldErrorMessage') },
                         ]}
                     >
                         <InputNumber addonAfter="%" placeholder="5" style={{ width: '100%' }} />
+                    </Form.Item>
+                    <Form.Item
+                        name="isHave"
+                        label={t("productsMenu.isHaveonWareHouse")}
+                        rules={[
+                            { required: true, message: t('fieldErrorMessage') },
+                        ]}
+                    >
+                        <Switch defaultChecked={updateData?.isHave ? updateData?.isHave : false} size="small" />
                     </Form.Item>
                 </Form>
             </Modal>

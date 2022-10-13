@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
-export interface ProductState {
+export interface OrderState {
     openModal: boolean;
     modalType: string;
 }
@@ -9,13 +9,13 @@ export interface ProductState {
 const initialState = {
     openModal: false,
     modalType: ''
-} as ProductState
+} as OrderState
 
-export const productSlice = createSlice({
-    name: 'product',
+export const orderSlice = createSlice({
+    name: 'order',
     initialState,
     reducers: {
-        updateProductStates: (state, action: PayloadAction<ProductState>) => {
+        updateOrderStates: (state, action: PayloadAction<OrderState>) => {
             const { openModal, modalType } = action.payload
             state.openModal = openModal
             state.modalType = modalType
@@ -23,5 +23,5 @@ export const productSlice = createSlice({
     },
 })
 
-export const { updateProductStates } = productSlice.actions
-export default productSlice.reducer
+export const { updateOrderStates } = orderSlice.actions
+export default orderSlice.reducer

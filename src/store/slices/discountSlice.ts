@@ -3,7 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 
 
 
-export interface CounterState {
+export interface DiscountState {
     openModal: boolean;
     modalType: string;
 }
@@ -11,13 +11,13 @@ export interface CounterState {
 const initialState = {
     openModal: false,
     modalType: ''
-} as CounterState
+} as DiscountState
 
 export const discountSlice = createSlice({
-    name: 'counter',
+    name: 'discount',
     initialState,
     reducers: {
-        updateDiscountStates: (state, action: PayloadAction<CounterState>) => {
+        updateDiscountStates: (state, action: PayloadAction<DiscountState>) => {
             const { openModal, modalType } = action.payload
             state.openModal = openModal
             state.modalType = modalType

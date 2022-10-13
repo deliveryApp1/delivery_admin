@@ -21,8 +21,15 @@
     "price": "Narxi",
     "discount": "Chegirma",
     "productName": "Mahsulot nomi",
-    "category": "Kategoriyasi"
+    "category": "Kategoriyasi",
+    "isHaveonWareHouse": "Omborda mavjud"
   },
+  "ordersMenu": {
+    "select_product": "Mahsulotni tanlang",
+    "quantity": "Miqdor",
+    "address": "Manzil"
+  },
+  "time": "Vaqti",
   "image": "Rasm",
   "actions": "Amallar",
   "delete": "O'chirish",
@@ -37,5 +44,6 @@
   "logout": "Chiqish",
   "lan": "Til",
   "chat": "Chat",
-  "confirm_signout": "Tizimdan chiqishni istaysizmi?"
+  "confirm_signout": "Tizimdan chiqishni istaysizmi?",
+  "fieldErrorMessage": "Ma'lumot kiritilmadi"
 }

@@ -23,6 +23,12 @@ export const appApi = createApi({
             }),
             providesTags: ["app"],
         }),
+        productSearch: builder.query<any | undefined, void>({
+            query: (productName) => ({
+                url: `/product/search/${productName}`,
+            }),
+            providesTags: ["app"],
+        }),
 
         // Mutations
 
@@ -64,6 +70,7 @@ export const appApi = createApi({
 
 export const {
     useCategoryListQuery,
+    useProductSearchQuery,
     useAppQuery,
     useAppAddMutation,
     useImageUploadMutation,

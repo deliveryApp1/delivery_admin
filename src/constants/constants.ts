@@ -16,3 +16,4 @@ export const roles: Array<Object> = [
 
 export const disabledDateStart = (current: any) => current && current >= moment().endOf('day');
 export const dateFormat = "DD.MM.YYYY";
+export const timeFormat = "DD.MM.YYYY HH:mm:ss";

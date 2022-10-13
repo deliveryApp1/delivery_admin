@@ -1,0 +1,7 @@
+.mapYandex {
+  width: "100%";
+  height: calc(100vh - 100px);
+}
+.location {
+  position: relative;
+}

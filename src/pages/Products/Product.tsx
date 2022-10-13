@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import type { RootState } from '../../store/store'
-import { Button, Col, message, Row, Image, Space, Typography, Table, Popconfirm } from "antd";
+import { Button, Col, message, Row, Image, Space, Typography, Table, Popconfirm, Switch } from "antd";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
 import ProductModal from "./_components/Modal";
 import { ProductDTO } from "types";
-import { useProductDeleteMutation, useProductQuery, useCategoryListQuery } from "store/endpoints";
+import { useProductDeleteMutation, useProductQuery, useCategoryListQuery, useProductUpdateMutation } from "store/endpoints";
 import { useSelector, useDispatch } from 'react-redux';
 import { updateProductStates } from "../../store/slices/productSlice";
 
@@ -15,6 +16,7 @@ const Products: React.FC = () => {
     const dispatch = useDispatch()
     const [query, setQuery] = useState({ page: 1, pageSize: 20 })
 
+    const [productUpdateMutation, productUpdate] = useProductUpdateMutation();
     const categoryQuery = useCategoryListQuery();
     const productQuery = useProductQuery(query);
     const [productDelete, { isLoading }] = useProductDeleteMutation();
@@ -79,6 +81,16 @@ const Products: React.FC = () => {
             key: "discount",
             // width: "75%",
             render: (item, record) => <>{item}</>
+        },
+        {
+            title: t("productsMenu.isHaveonWareHouse"),
+            dataIndex: "isHave",
+            key: "isHave",
+            width: "12%",
+            render: (item, record) => <Switch
+                defaultChecked={item}
+                onChange={e => productUpdateMutation({ id: record.id, value: { ...record, isHave: e } })}
+                size='small' />
         },
         {
             title: t("actions"),

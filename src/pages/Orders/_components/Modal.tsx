@@ -1,17 +1,16 @@
-import { useProductAddMutation, useProductUpdateMutation } from "store/endpoints";
-import { Form, message, Input, InputNumber, Upload, Select, ModalProps, Modal } from "antd";
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import type { UploadChangeParam } from 'antd/es/upload';
-import { useDispatch } from 'react-redux';
-import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import React, { useState, useEffect } from 'react';
-import { updateProductStates } from "../../../store/slices/productSlice";
+import { useOrderAddMutation, useOrderUpdateMutation, useProductSearchQuery } from "store/endpoints";
+import { Form, InputNumber, message, Select, ModalProps, Modal, Button, Spin } from "antd";
+import { ArrowRightOutlined } from '@ant-design/icons';
+import { updateOrderStates } from 'store/slices/orderSlice';
+import { useDispatch } from 'react-redux';
+import MapDrawer from "./Map";
+import { debounce } from "lodash";
 
-const { TextArea } = Input
 const { Option } = Select;
 
 type Props = ModalProps & {
-    categoryData: any,
+    productData: any,
     updateData: any,
     modalType: string;
     t: any
@@ -26,46 +25,34 @@ const formItemLayout = {
     },
 }
 
-const getBase64 = (img: RcFile, callback: (url: string) => void) => {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result as string));
-    reader.readAsDataURL(img);
-};
-
-const beforeUpload = (file: RcFile) => {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-    if (!isJpgOrPng) {
-        message.error('Siz faqat JPG/PNG turdagi fayllarni yuklay olasiz!');
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-        message.error("Surat hajmi 2MB dan kichik bo'lishi kerak!");
-    }
-    return isJpgOrPng && isLt2M;
-};
-
-const OrdersModal: React.FC<Props> = ({ updateData, t, categoryData, modalType, ...modalProps }) => {
+const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, ...modalProps }) => {
+    const [searchValue, setSearchValue] = useState<any>(updateData?.data?.products?.product?.name)
+    const productSearch = useProductSearchQuery(searchValue)
     const dispatch = useDispatch()
-    const [loading, setLoading] = useState(false);
-    const [imageUrl, setImageUrl] = useState<string>();
-    const [responseImageUrl, setResponseImageUrl] = useState<string>();
+    const [openMap, setOpenMap] = useState(false);
+    const [coords, setCoords] = useState<any>([]);
+    const [address, setAddress] = useState("");
+
+    const showDrawer = () => {
+        setOpenMap(true);
+    };
     const [form] = Form.useForm();
-    const [productUpdateMutation, productUpdate] = useProductUpdateMutation();
-    const [productMutation, productCreate] = useProductAddMutation();
+    const [orderUpdateMutation, orderUpdate] = useOrderUpdateMutation();
+    const [orderMutation, orderCreate] = useOrderAddMutation();
     const clearState = () => {
-        setImageUrl('')
+        setSearchValue("")
+        setCoords([])
+        setAddress("")
         form.resetFields()
     }
     useEffect(() => {
         if (updateData && modalType === 'update') {
-            setImageUrl(`http://147.182.130.242:3000/${updateData?.image}`)
+            setSearchValue(updateData.data.products[0].product.name)
+            setCoords([updateData.data.location.latitude, updateData.data.location.longitude])
+            setAddress(updateData.data.location.address)
             form.setFieldsValue({
-                image: updateData?.image,
-                name: updateData?.name,
-                categoryId: updateData?.categoryId,
-                description: updateData?.description,
-                price: updateData?.price,
-                discount: updateData?.discount
+                productId: updateData.data.products[0].product.id,
+                quantity: updateData.data.products[0].quantity,
             })
         }
         return () => clearState()
@@ -76,19 +63,34 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, categoryData, modalType, 
         form.validateFields()
             .then(data => {
                 console.log('data: ', data);
-                const formData = { ...data, image: responseImageUrl }
+                console.log('coords: ', coords);
+                console.log('address: ', address);
+                const formData = {
+                    data: {
+                        products: [{
+                            productId: data.productId.value,
+                            quantity: data.quantity
+                        }],
+                        location: {
+                            latitude: coords[0],
+                            longitude: coords[1],
+                            address: address
+                        }
+                    },
+                    courierId: 1,
+                    clientId: 1
+                }
+                console.log("formData: ", formData);
                 if (modalType === 'update') {
-                    data.image = responseImageUrl
-                    const productPromise = productUpdateMutation({
+                    const orderPromise = orderUpdateMutation({
                         id: updateData.id,
-                        value: formData,
+                        value: data,
                     }).unwrap();
-                    productPromise
+                    orderPromise
                         .then((res: { statusCode: number; }) => {
                             if (res.statusCode === 200) {
                                 message.success("Muvaffaqiyati tahrirlandi.");
-                                dispatch(updateProductStates({ openModal: false, modalType: '' }))
-                                setImageUrl("")
+                                dispatch(updateOrderStates({ openModal: false, modalType: '' }))
                                 form.resetFields();
                             }
                         })
@@ -96,12 +98,12 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, categoryData, modalType, 
                             message.error(`Xatolik yuz berdi. Xatolik: ${err.message}`);
                         });
                 } else if (modalType === 'create') {
-                    const productPromise = productMutation(formData).unwrap();
-                    productPromise
+                    const orderPromise = orderMutation(formData).unwrap();
+                    orderPromise
                         .then((res) => {
                             if (res.statusCode === 200) {
                                 message.success("Muvaffaqiyati saqlandi.");
-                                dispatch(updateProductStates({ openModal: false, modalType: '' }))
+                                dispatch(updateOrderStates({ openModal: false, modalType: '' }))
                                 clearState()
                             }
                         })
@@ -113,29 +115,12 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, categoryData, modalType, 
 
     };
 
-    const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
-        if (info.file.status === 'uploading') {
-            setLoading(true);
-            return;
-        }
-        if (info.file.status === 'done') {
-            setResponseImageUrl(info.file.response.result.url)
-            // Get this url from response in real world.
-            getBase64(info.file.originFileObj as RcFile, url => {
-                setLoading(false);
-                setImageUrl(url);
-            });
-        }
-    };
-
-    const uploadButton = (
-        <div>
-            {loading ? <LoadingOutlined /> : <PlusOutlined />}
-            <div style={{ marginTop: 8 }}>Upload</div>
-        </div>
-    );
-    const categoryOptions = categoryData?.map((category: { id: any; name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (<Option key={category.id} value={category.id}>{category.name}</Option>))
-    const props = { onOk: handleSubmit, confirmLoading: modalType.length ? modalType === 'create' ? productCreate.isLoading : productUpdate.isLoading : false, forceRender: true, ...modalProps }
+    const onProductSearch = debounce(productName => {
+        setSearchValue(productName)
+    }, 300)
+    const productOptions = productSearch?.data?.data?.map((product: { id: any; name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (<Option key={product.id} value={product.id}>{product.name}</Option>))
+    const props = { onOk: handleSubmit, confirmLoading: modalType.length ? modalType === 'create' ? orderCreate.isLoading : orderUpdate.isLoading : false, forceRender: true, ...modalProps }
+    console.log("productOptions: ", productOptions);
     return (
         <>
             <Modal
@@ -149,74 +134,48 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, categoryData, modalType, 
                     autoComplete="off"
                 >
                     <Form.Item
-                        name='image'
-                        label={t("image")}
+                        name="productId"
+                        label={t("menus.products")}
                         rules={[
-                            { required: true, message: `Rasm yuklanmadi` },
+                            { required: true, message: t("ordersMenu.select_product") },
                         ]}
                     >
-                        <Upload
-                            name="file"
-                            listType="picture-card"
-                            className="avatar-uploader"
-                            showUploadList={false}
-                            action="http://147.182.130.242:3000/image-upload"
-                            beforeUpload={beforeUpload}
-                            onChange={handleChange}
-                            maxCount={1}
+                        <Select
+                            labelInValue
+                            mode='multiple'
+                            allowClear
+                            showSearch
+                            placeholder="Select products"
+                            value={searchValue}
+                            onSearch={onProductSearch}
+                            filterOption={false}
+                            notFoundContent={productSearch.isLoading ? <Spin size="small" /> : null}
                         >
-                            {imageUrl ? <img src={imageUrl} alt="productImage" style={{ width: '100%' }} /> : uploadButton}
-                        </Upload>
-                    </Form.Item>
-                    <Form.Item
-                        name="name"
-                        label={t("productsMenu.productName")}
-                        rules={[
-                            { required: true, message: `Mahsulot nomini kiriting` },
-                        ]}
-                    >
-                        <Input placeholder="Nomini kiriting" />
-                    </Form.Item>
-                    <Form.Item
-                        name="categoryId"
-                        label={t("productsMenu.category")}
-                        rules={[
-                            { required: true, message: `Kategoriyalar` },
-                        ]}
-                    >
-                        <Select allowClear placeholder='Kategoriyani tanlang'>
-                            {categoryOptions}
+                            {productOptions}
                         </Select>
                     </Form.Item>
                     <Form.Item
-                        name="description"
-                        label={t("productsMenu.description")}
+                        name="quantity"
+                        label={t("ordersMenu.quantity")}
                         rules={[
-                            { required: true, message: `Ta'rif kiriting` },
+                            { required: true, message: `Miqdorini kiriting` },
                         ]}
                     >
-                        <TextArea allowClear autoSize placeholder="Ta'rifni kiriting" />
+                        <InputNumber style={{ width: '100%' }} placeholder="Miqdorini kiriting" />
                     </Form.Item>
-                    <Form.Item
-                        name="price"
-                        label={t("productsMenu.price")}
-                        style={{ width: '100%' }}
-                        rules={[
-                            { required: true, message: `Narxni kiriting` },
-                        ]}
-                    >
-                        <InputNumber addonAfter="so'm" placeholder="1000" style={{ width: '100%' }} />
-                    </Form.Item>
-                    <Form.Item
-                        name="discount"
-                        label={t("productsMenu.discount")}
-                        rules={[
-                            { required: false, message: `Chegirma kiriting` },
-                        ]}
-                    >
-                        <InputNumber addonAfter="%" placeholder="5" style={{ width: '100%' }} />
+                    <Form.Item name='map' label="Manzil"
+                        rules={[{ required: coords.length === 0, message: "Xatolik" }]}>
+                        <Button block onClick={showDrawer}>Xaritadan belgilash<ArrowRightOutlined /></Button>
                     </Form.Item>
                 </Form>
+                <MapDrawer
+                    open={openMap}
+                    setOpen={setOpenMap}
+                    coords={coords}
+                    setCoords={setCoords}
+                    address={address}
+                    setAddress={setAddress}
+                />
             </Modal>
         </>
     );

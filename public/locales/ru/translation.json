@@ -21,8 +21,15 @@
     "price": "Цена",
     "discount": "Скидка",
     "productName": "Наименование товара",
-    "category": "Категория"
+    "category": "Категория",
+    "isHaveonWareHouse": "Доступно на складе"
   },
+  "ordersMenu": {
+    "select_product": "Выберите продукт",
+    "quantity": "Количество",
+    "address": "Адрес"
+  },
+  "time": "Время",
   "image": "Изображение",
   "actions": "Действия",
   "delete": "Удалить",
@@ -37,5 +44,6 @@
   "logout": "Sign out",
   "lan": "Язык",
   "chat": "Chat",
-  "confirm_signout": "Are you sure you want to leave?"
+  "confirm_signout": "Are you sure you want to leave?",
+  "fieldErrorMessage": "Информация не введена"
 }

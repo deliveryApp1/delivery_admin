@@ -28,7 +28,7 @@ export const orderApi = createApi({
 
         // Mutations
 
-        orderAdd: builder.mutation<GetOrderType, { name: string }>({
+        orderAdd: builder.mutation<GetOrderType, any>({
             query: (data) => ({
                 url: "/order",
                 method: "POST",
