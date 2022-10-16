@@ -22,7 +22,10 @@
     "discount": "Скидка",
     "productName": "Наименование товара",
     "category": "Категория",
-    "isHaveonWareHouse": "Доступно на складе"
+    "isHaveonWareHouse": "Доступно на складе",
+    "enter_desc": "Введите описание",
+    "select_category": "Выберите категорию",
+    "enter_name": "Введите имя"
   },
   "ordersMenu": {
     "select_product": "Выберите продукт",
@@ -30,7 +33,10 @@
     "address": "Адрес",
     "searchProduct": "Поиск продукта",
     "map_point": "Отметить на карте",
-    "edit_map_point": "Изменить карту"
+    "edit_map_point": "Изменить карту",
+    "choosen": "Избранные",
+    "product_type": "Тип продукта",
+    "total_sum": "Итого"
   },
   "time": "Время",
   "image": "Изображение",

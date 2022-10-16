@@ -69,7 +69,7 @@ const Products: React.FC = () => {
             render: (item, record) => <>{item}</>
         },
         {
-            title: t("productsMenu.price"),
+            title: <>{t("productsMenu.price")}{" "}(RUB)</>,
             dataIndex: "price",
             key: "price",
             // width: "75%",

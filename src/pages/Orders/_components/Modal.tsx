@@ -214,7 +214,7 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, .
                             {productOptions}
                         </Select>
                     </Form.Item>
-                    {!isEmpty(products) && <Form.Item label="Tanlanganlar">
+                    {!isEmpty(products) && <Form.Item label={t("ordersMenu.choosen")}>
                         <List
                             itemLayout='horizontal'
                             bordered
@@ -222,13 +222,13 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, .
                             // style={{ width: '60%', margin: "auto", marginBottom: 24 }}
                             dataSource={products}
                             footer={<Space direction='vertical' size="small">
-                                <span>Mahsulotlar soni: {products.length}</span>
+                                <span>{t("ordersMenu.product_type")}: {products.length}</span>
                                 <span>
-                                    Umumiy summa: <CurrencyFormat
+                                    {t("ordersMenu.total_sum")}: <CurrencyFormat
                                         value={totalPrice}
                                         displayType={'text'}
                                         thousandSeparator={true}
-                                    />
+                                    /> (RUB)
                                 </span>
                             </Space>}
                             renderItem={item => {
@@ -240,11 +240,11 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, .
                                             }
                                         }} /> {item.quantity}
                                             <Button size='small' onClick={() => increamentQuantity(item.id)} icon={<PlusOutlined />} /></Space>}
-                                        actions={[<CurrencyFormat
+                                        actions={[<><CurrencyFormat
                                             value={item.price * item.quantity}
                                             displayType={'text'}
                                             thousandSeparator={true}
-                                        />]}
+                                        />{" "}(RUB)</>]}
                                     >
                                         {item.name}
                                     </List.Item>

@@ -177,7 +177,7 @@ const ProductModal: React.FC<Props> = ({ updateData, t, categoryData, modalType,
                             { required: true, message: t('fieldErrorMessage') },
                         ]}
                     >
-                        <Input placeholder="Nomini kiriting" />
+                        <Input placeholder={t("productsMenu.enter_name")} />
                     </Form.Item>
                     <Form.Item
                         name="categoryId"
@@ -186,7 +186,7 @@ const ProductModal: React.FC<Props> = ({ updateData, t, categoryData, modalType,
                             { required: true, message: t('fieldErrorMessage') },
                         ]}
                     >
-                        <Select allowClear placeholder='Kategoriyani tanlang'>
+                        <Select allowClear placeholder={t("productsMenu.select_category")}>
                             {categoryOptions}
                         </Select>
                     </Form.Item>
@@ -197,7 +197,7 @@ const ProductModal: React.FC<Props> = ({ updateData, t, categoryData, modalType,
                             { required: true, message: t('fieldErrorMessage') },
                         ]}
                     >
-                        <TextArea allowClear autoSize placeholder="Ta'rifni kiriting" />
+                        <TextArea allowClear autoSize placeholder={t("productsMenu.enter_desc")} />
                     </Form.Item>
                     <Form.Item
                         name="price"
@@ -207,7 +207,7 @@ const ProductModal: React.FC<Props> = ({ updateData, t, categoryData, modalType,
                             { required: true, message: t('fieldErrorMessage') },
                         ]}
                     >
-                        <InputNumber placeholder="1000" style={{ width: '100%' }} />
+                        <InputNumber addonAfter="RUB" placeholder="1000" style={{ width: '100%' }} />
                     </Form.Item>
                     <Form.Item
                         name="discount"

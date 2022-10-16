@@ -22,7 +22,10 @@
     "discount": "Chegirma",
     "productName": "Mahsulot nomi",
     "category": "Kategoriyasi",
-    "isHaveonWareHouse": "Omborda mavjud"
+    "isHaveonWareHouse": "Omborda mavjud",
+    "enter_desc": "Tavsif kiriting",
+    "select_category": "Kategoriyani tanlang",
+    "enter_name": "Nomini kiriting"
   },
   "ordersMenu": {
     "select_product": "Mahsulotni tanlang",
@@ -30,7 +33,10 @@
     "address": "Manzil",
     "searchProduct": "Mahsulotni izlash",
     "map_point": "Xaritadan belgilash",
-    "edit_map_point": "Xaritani tahrirlash"
+    "edit_map_point": "Xaritani tahrirlash",
+    "choosen": "Tanlanganlar",
+    "product_type": "Mahsulot turi",
+    "total_sum": "Jami summa"
   },
   "time": "Vaqti",
   "image": "Rasm",
