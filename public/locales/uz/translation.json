@@ -27,7 +27,10 @@
   "ordersMenu": {
     "select_product": "Mahsulotni tanlang",
     "quantity": "Miqdor",
-    "address": "Manzil"
+    "address": "Manzil",
+    "searchProduct": "Mahsulotni izlash",
+    "map_point": "Xaritadan belgilash",
+    "edit_map_point": "Xaritani tahrirlash"
   },
   "time": "Vaqti",
   "image": "Rasm",

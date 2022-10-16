@@ -9,6 +9,7 @@ interface MapProps {
     setOpen: (arg0: boolean) => void;
     setCoords: (arg0: any) => void;
     setAddress: (arg0: string) => void;
+    t: any;
 }
 type Mapref = {
     current: any;
@@ -25,7 +26,7 @@ type PlacemarkRef = {
     geometry: any;
     events: any;
 };
-const MapDrawer: React.FC<MapProps> = ({ open, setOpen, coords, setCoords, address, setAddress }) => {
+const MapDrawer: React.FC<MapProps> = ({ open, setOpen, coords, setCoords, address, setAddress, t }) => {
     const ymaps = useRef<Ymaps>();
     const mapRef = useRef<Mapref>();
     const placemarkRef = useRef<PlacemarkRef>();
@@ -67,12 +68,12 @@ const MapDrawer: React.FC<MapProps> = ({ open, setOpen, coords, setCoords, addre
     };
 
     return (
-        <Drawer width='45%' style={{ padding: 0 }} title={`Xaritadan belgilash: ${address}`} placement="right" onClose={onClose} open={open}>
+        <Drawer width='45%' style={{ padding: 0 }} title={`${t("ordersMenu.address")}: ${address}`} placement="right" onClose={onClose} open={open}>
             <Spin spinning={!isMapReady}>
                 <div className='location'>
                     <YMaps query={{ apikey: env.YnxMapKey }}>
                         <Map
-                            defaultState={{ center: [55.751574, 37.573856], zoom: 10, controls: ['zoomControl', 'fullscreenControl'] }}
+                            defaultState={{ center: [55.751574, 37.573856], zoom: 12, controls: ['zoomControl', 'fullscreenControl'] }}
                             className='mapYandex' onClick={onMapClick}
                             onLoad={(e) => {
                                 if (e) {

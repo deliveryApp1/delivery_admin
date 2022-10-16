@@ -39,7 +39,7 @@ export const orderApi = createApi({
 
         orderUpdate: builder.mutation<
             GetOrderType,
-            { id: number; value: { name: string } | undefined }
+            { id: number; value: any }
         >({
             query: ({ id, value }) => ({
                 url: `/order/${id}`,

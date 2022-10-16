@@ -70,14 +70,6 @@ const HomePage: React.FC = (props: Props) => {
                         e.ready(() => setIsMapReady(true))
                     }
                 }}
-                instanceRef={(ref: any) => {
-                    try {
-                        ref.events.add('boundschange', (e: { originalEvent: { newCenter: React.SetStateAction<never[]>; }; }) => {
-                            setCoords(e.originalEvent.newCenter)
-                        })
-                    } catch (err) {
-                    }
-                }}
                 modules={['geoObject.addon.balloon', "Placemark", "geocode", 'geoObject.addon.hint',
                     'borders', 'ObjectManager', 'geoObject.addon.editor']}>
                 <FullscreenControl />

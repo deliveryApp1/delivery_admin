@@ -29,7 +29,15 @@ export const appApi = createApi({
             }),
             providesTags: ["app"],
         }),
-
+        productList: builder.query<any, { isHave: boolean }>({
+            query: ({ isHave }) => {
+                return {
+                    url: `/product`,
+                    params: { isHave: isHave }
+                }
+            },
+            providesTags: ["app"],
+        }),
         // Mutations
 
         appAdd: builder.mutation({
@@ -71,6 +79,7 @@ export const appApi = createApi({
 export const {
     useCategoryListQuery,
     useProductSearchQuery,
+    useProductListQuery,
     useAppQuery,
     useAppAddMutation,
     useImageUploadMutation,

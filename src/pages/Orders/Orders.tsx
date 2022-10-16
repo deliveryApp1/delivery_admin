@@ -9,6 +9,7 @@ import { useOrderDeleteMutation, useOrderQuery, useProductQuery } from "store/en
 import { useSelector, useDispatch } from 'react-redux';
 import { timeFormat } from '../../constants/constants'
 import { updateOrderStates } from "store/slices/orderSlice";
+import CurrencyFormat from 'react-currency-format';
 import moment from "moment";
 
 const Orders: React.FC = () => {
@@ -58,7 +59,7 @@ const Orders: React.FC = () => {
             dataIndex: "total",
             key: "total",
             // width: "75%",
-            render: (item, record) => item
+            render: (item, record) => <CurrencyFormat value={item} displayType={'text'} thousandSeparator={true} />
         },
         {
             title: t("ordersMenu.address"),

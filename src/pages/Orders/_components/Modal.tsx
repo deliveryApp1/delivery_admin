@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useOrderAddMutation, useOrderUpdateMutation, useProductSearchQuery } from "store/endpoints";
-import { Form, InputNumber, message, Select, ModalProps, Modal, Button, Spin } from "antd";
-import { ArrowRightOutlined } from '@ant-design/icons';
+import { useOrderAddMutation, useOrderUpdateMutation, useProductSearchQuery, useProductListQuery } from "store/endpoints";
+import { Form, InputNumber, message, Select, ModalProps, Modal, Button, Spin, List, Space } from "antd";
+import { ArrowRightOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { updateOrderStates } from 'store/slices/orderSlice';
 import { useDispatch } from 'react-redux';
 import MapDrawer from "./Map";
-import { debounce } from "lodash";
+import CurrencyFormat from 'react-currency-format';
+import { debounce, isEmpty } from "lodash";
 
 const { Option } = Select;
 
@@ -18,20 +19,37 @@ type Props = ModalProps & {
 
 const formItemLayout = {
     labelCol: {
-        span: 8,
+        span: 5,
     },
     wrapperCol: {
-        span: 14,
+        span: 18,
     },
+}
+interface Product {
+    id: number;
+    disabled?: undefined | any;
+    key: string | number;
+    label: string;
+    title: any;
+    value: number;
+    quantity: number;
+    name: string;
+    price: number;
+}
+
+interface ProductReady {
+    productId?: number;
+    quantity?: number;
 }
 
 const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, ...modalProps }) => {
-    const [searchValue, setSearchValue] = useState<any>(updateData?.data?.products?.product?.name)
-    const productSearch = useProductSearchQuery(searchValue)
+    // const productSearch = useProductSearchQuery(searchValue)
+    const wholeProductList = useProductListQuery({ isHave: true })
     const dispatch = useDispatch()
     const [openMap, setOpenMap] = useState(false);
     const [coords, setCoords] = useState<any>([]);
     const [address, setAddress] = useState("");
+    const [products, setProducts] = useState<Array<any>>([])
 
     const showDrawer = () => {
         setOpenMap(true);
@@ -40,19 +58,26 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, .
     const [orderUpdateMutation, orderUpdate] = useOrderUpdateMutation();
     const [orderMutation, orderCreate] = useOrderAddMutation();
     const clearState = () => {
-        setSearchValue("")
         setCoords([])
         setAddress("")
+        setProducts([])
         form.resetFields()
     }
     useEffect(() => {
         if (updateData && modalType === 'update') {
-            setSearchValue(updateData.data.products[0].product.name)
+            const updateProducts = updateData.data.products.map((item: { product: any; quantity: any; }) => {
+                return {
+                    ...item.product,
+                    quantity: item.quantity
+                }
+            })
+            const updateProductsValue = updateData.data.products.map((item: { product: any; }) => JSON.stringify(item.product))
+            console.log("updateData: ", updateProducts);
+            setProducts(updateProducts)
             setCoords([updateData.data.location.latitude, updateData.data.location.longitude])
             setAddress(updateData.data.location.address)
             form.setFieldsValue({
-                productId: updateData.data.products[0].product.id,
-                quantity: updateData.data.products[0].quantity,
+                productId: updateProductsValue,
             })
         }
         return () => clearState()
@@ -63,14 +88,16 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, .
         form.validateFields()
             .then(data => {
                 console.log('data: ', data);
-                console.log('coords: ', coords);
-                console.log('address: ', address);
+                console.log('products: ', products);
+                const newProductArray = products.map(item => {
+                    let newObj: ProductReady = {}
+                    newObj.productId = item.id
+                    newObj.quantity = item.quantity
+                    return newObj
+                })
                 const formData = {
                     data: {
-                        products: [{
-                            productId: data.productId.value,
-                            quantity: data.quantity
-                        }],
+                        products: newProductArray,
                         location: {
                             latitude: coords[0],
                             longitude: coords[1],
@@ -80,11 +107,10 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, .
                     courierId: 1,
                     clientId: 1
                 }
-                console.log("formData: ", formData);
                 if (modalType === 'update') {
                     const orderPromise = orderUpdateMutation({
                         id: updateData.id,
-                        value: data,
+                        value: formData,
                     }).unwrap();
                     orderPromise
                         .then((res: { statusCode: number; }) => {
@@ -112,15 +138,48 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, .
                         });
                 }
             }).catch(err => console.log('Form error: ', err))
-
     };
 
-    const onProductSearch = debounce(productName => {
-        setSearchValue(productName)
-    }, 300)
-    const productOptions = productSearch?.data?.data?.map((product: { id: any; name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (<Option key={product.id} value={product.id}>{product.name}</Option>))
+    const increamentQuantity = (productId: number) => {
+        setProducts(
+            products.map(item => {
+                if (item.id === productId) {
+                    item.quantity++
+                }
+                return item
+            })
+        )
+    }
+    const decreamentQuantity = (productId: number) => {
+        setProducts(
+            products.map(item => {
+                if (item.id === productId) {
+                    item.quantity--
+                }
+                return item
+            })
+        )
+    }
+    const onChangeSelect = (e: any[]) => {
+        const productList = e.map(item => {
+            const isExist = products.find(prod => prod.id === JSON.parse(item).id)
+            console.log("isExist: ", isExist);
+            return { ...JSON.parse(item), quantity: isExist ? isExist.quantity : 1 }
+        })
+
+        setProducts(productList)
+    }
+
+    // console.log("wholeProductList: ", wholeProductList);
+    // console.log("products: ", products);
+    const productOptions = wholeProductList?.data?.data?.map((product: any) =>
+        (<Option key={product.id} value={JSON.stringify(product)}>{product.name}</Option>))
+
+
+    const totalPrice = products.reduce((prevValue, currentValue) => {
+        return prevValue + (currentValue.price * currentValue.quantity)
+    }, 0)
     const props = { onOk: handleSubmit, confirmLoading: modalType.length ? modalType === 'create' ? orderCreate.isLoading : orderUpdate.isLoading : false, forceRender: true, ...modalProps }
-    console.log("productOptions: ", productOptions);
     return (
         <>
             <Modal
@@ -141,31 +200,61 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, .
                         ]}
                     >
                         <Select
-                            labelInValue
+                            // labelInValue
                             mode='multiple'
                             allowClear
                             showSearch
-                            placeholder="Select products"
-                            value={searchValue}
-                            onSearch={onProductSearch}
-                            filterOption={false}
-                            notFoundContent={productSearch.isLoading ? <Spin size="small" /> : null}
+                            placeholder={t("ordersMenu.searchProduct")}
+                            // value={searchValue}
+                            // onSearch={onProductSearch}
+                            // filterOption={false}
+                            // notFoundContent={productSearch.isLoading ? <Spin size="small" /> : null}
+                            onChange={onChangeSelect}
                         >
                             {productOptions}
                         </Select>
                     </Form.Item>
-                    <Form.Item
-                        name="quantity"
-                        label={t("ordersMenu.quantity")}
-                        rules={[
-                            { required: true, message: `Miqdorini kiriting` },
-                        ]}
-                    >
-                        <InputNumber style={{ width: '100%' }} placeholder="Miqdorini kiriting" />
-                    </Form.Item>
-                    <Form.Item name='map' label="Manzil"
+                    {!isEmpty(products) && <Form.Item label="Tanlanganlar">
+                        <List
+                            itemLayout='horizontal'
+                            bordered
+                            size='small'
+                            // style={{ width: '60%', margin: "auto", marginBottom: 24 }}
+                            dataSource={products}
+                            footer={<Space direction='vertical' size="small">
+                                <span>Mahsulotlar soni: {products.length}</span>
+                                <span>
+                                    Umumiy summa: <CurrencyFormat
+                                        value={totalPrice}
+                                        displayType={'text'}
+                                        thousandSeparator={true}
+                                    />
+                                </span>
+                            </Space>}
+                            renderItem={item => {
+                                return (
+                                    <List.Item
+                                        extra={<Space size={5} wrap><Button size='small' icon={<MinusOutlined />} onClick={() => {
+                                            if (item.quantity > 1) {
+                                                decreamentQuantity(item.id)
+                                            }
+                                        }} /> {item.quantity}
+                                            <Button size='small' onClick={() => increamentQuantity(item.id)} icon={<PlusOutlined />} /></Space>}
+                                        actions={[<CurrencyFormat
+                                            value={item.price * item.quantity}
+                                            displayType={'text'}
+                                            thousandSeparator={true}
+                                        />]}
+                                    >
+                                        {item.name}
+                                    </List.Item>
+                                )
+                            }}
+                        />
+                    </Form.Item>}
+                    <Form.Item name='map' label={t("ordersMenu.address")}
                         rules={[{ required: coords.length === 0, message: "Xatolik" }]}>
-                        <Button block onClick={showDrawer}>Xaritadan belgilash<ArrowRightOutlined /></Button>
+                        <Button block onClick={showDrawer}>{coords.length === 0 ? t('ordersMenu.map_point') : t("ordersMenu.edit_map_point")}<ArrowRightOutlined /></Button>
                     </Form.Item>
                 </Form>
                 <MapDrawer
@@ -175,6 +264,7 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, .
                     setCoords={setCoords}
                     address={address}
                     setAddress={setAddress}
+                    t={t}
                 />
             </Modal>
         </>

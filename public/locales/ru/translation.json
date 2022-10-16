@@ -27,7 +27,10 @@
   "ordersMenu": {
     "select_product": "Выберите продукт",
     "quantity": "Количество",
-    "address": "Адрес"
+    "address": "Адрес",
+    "searchProduct": "Поиск продукта",
+    "map_point": "Отметить на карте",
+    "edit_map_point": "Изменить карту"
   },
   "time": "Время",
   "image": "Изображение",

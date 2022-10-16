@@ -207,7 +207,7 @@ const ProductModal: React.FC<Props> = ({ updateData, t, categoryData, modalType,
                             { required: true, message: t('fieldErrorMessage') },
                         ]}
                     >
-                        <InputNumber addonAfter="so'm" placeholder="1000" style={{ width: '100%' }} />
+                        <InputNumber placeholder="1000" style={{ width: '100%' }} />
                     </Form.Item>
                     <Form.Item
                         name="discount"
