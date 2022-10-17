@@ -54,5 +54,6 @@
   "lan": "Til",
   "chat": "Chat",
   "confirm_signout": "Tizimdan chiqishni istaysizmi?",
-  "fieldErrorMessage": "Ma'lumot kiritilmadi"
+  "fieldErrorMessage": "Ma'lumot kiritilmadi",
+  "ruble": "RUB"
 }

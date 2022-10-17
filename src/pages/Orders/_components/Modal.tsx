@@ -228,7 +228,7 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, .
                                         value={totalPrice}
                                         displayType={'text'}
                                         thousandSeparator={true}
-                                    /> (RUB)
+                                    /> ({t("ruble")})
                                 </span>
                             </Space>}
                             renderItem={item => {
@@ -244,7 +244,7 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, .
                                             value={item.price * item.quantity}
                                             displayType={'text'}
                                             thousandSeparator={true}
-                                        />{" "}(RUB)</>]}
+                                        />{" "}({t("ruble")})</>]}
                                     >
                                         {item.name}
                                     </List.Item>

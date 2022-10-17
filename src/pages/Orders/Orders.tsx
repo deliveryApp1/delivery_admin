@@ -55,7 +55,7 @@ const Orders: React.FC = () => {
             render: (item, record: any) => moment(item).format(timeFormat)
         },
         {
-            title: t("productsMenu.price"),
+            title: <>{t("productsMenu.price")}{" "}({t("ruble")})</>,
             dataIndex: "total",
             key: "total",
             // width: "75%",

@@ -54,5 +54,6 @@
   "lan": "Язык",
   "chat": "Chat",
   "confirm_signout": "Are you sure you want to leave?",
-  "fieldErrorMessage": "Информация не введена"
+  "fieldErrorMessage": "Информация не введена",
+  "ruble": "Руб"
 }
