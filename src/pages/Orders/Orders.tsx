@@ -19,7 +19,7 @@ const Orders: React.FC = () => {
     const [query, setQuery] = useState({ page: 1, pageSize: 20 })
 
     const productQuery = useProductQuery(query);
-    const orderQuery = useOrderQuery(query);
+    const orderQuery = useOrderQuery(query, { pollingInterval: 5000 });
     const [orderDelete, { isLoading }] = useOrderDeleteMutation();
     const [updateData, setUpdateData] = useState();
     const handleUpdate = (data: any) => {
