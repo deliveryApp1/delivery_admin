@@ -36,7 +36,13 @@
     "edit_map_point": "Xaritani tahrirlash",
     "choosen": "Tanlanganlar",
     "product_type": "Mahsulot turi",
-    "total_sum": "Jami summa"
+    "total_sum": "Jami summa",
+    "client": "Mijoz",
+    "order_status": "Buyurtma holati",
+    "pending": "Mijoz kutmoqda",
+    "inprogress": "Jo'natish uchun tayyorlanmoqda",
+    "ontheway": "Yo'lda",
+    "delivered": "Yetkazildi"
   },
   "time": "Vaqti",
   "image": "Rasm",

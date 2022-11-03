@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useOrderAddMutation, useOrderUpdateMutation, useProductSearchQuery, useProductListQuery } from "store/endpoints";
-import { Form, InputNumber, message, Select, ModalProps, Modal, Button, Spin, List, Space } from "antd";
+import { useOrderAddMutation, useOrderUpdateMutation, useProductListQuery } from "store/endpoints";
+import { Form, message, Select, ModalProps, Modal, Button, List, Space } from "antd";
 import { ArrowRightOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { updateOrderStates } from 'store/slices/orderSlice';
 import { useDispatch } from 'react-redux';
 import MapDrawer from "./Map";
+import { orderStatus } from 'constants/constants';
 import CurrencyFormat from 'react-currency-format';
-import { debounce, isEmpty } from "lodash";
+import { isEmpty } from "lodash";
 
 const { Option } = Select;
 
@@ -25,17 +26,17 @@ const formItemLayout = {
         span: 18,
     },
 }
-interface Product {
-    id: number;
-    disabled?: undefined | any;
-    key: string | number;
-    label: string;
-    title: any;
-    value: number;
-    quantity: number;
-    name: string;
-    price: number;
-}
+// interface Product {
+//     id: number;
+//     disabled?: undefined | any;
+//     key: string | number;
+//     label: string;
+//     title: any;
+//     value: number;
+//     quantity: number;
+//     name: string;
+//     price: number;
+// }
 
 interface ProductReady {
     productId?: number;
@@ -72,12 +73,12 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, .
                 }
             })
             const updateProductsValue = updateData.data.products.map((item: { product: any; }) => JSON.stringify(item.product))
-            console.log("updateData: ", updateProducts);
             setProducts(updateProducts)
             setCoords([updateData.data.location.latitude, updateData.data.location.longitude])
             setAddress(updateData.data.location.address)
             form.setFieldsValue({
                 productId: updateProductsValue,
+                status: updateData.status
             })
         }
         return () => clearState()
@@ -87,8 +88,6 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, .
     const handleSubmit = () => {
         form.validateFields()
             .then(data => {
-                console.log('data: ', data);
-                console.log('products: ', products);
                 const newProductArray = products.map(item => {
                     let newObj: ProductReady = {}
                     newObj.productId = item.id
@@ -104,6 +103,7 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, .
                             address: address
                         }
                     },
+                    status: data.status,
                     courierId: 1,
                     clientId: 1
                 }
@@ -174,6 +174,19 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, .
     // console.log("products: ", products);
     const productOptions = wholeProductList?.data?.data?.map((product: any) =>
         (<Option key={product.id} value={JSON.stringify(product)}>{product.name}</Option>))
+    // eslint-disable-next-line array-callback-return
+    const statusOption = orderStatus.map((status: any) => {
+        switch (status.value) {
+            case 'PENDING':
+                return (<Option key={status.value} value={status.value}>{t("ordersMenu.pending")}</Option>)
+            case 'INPROGRESS':
+                return (<Option key={status.value} value={status.value}>{t("ordersMenu.inprogress")}</Option>)
+            case 'ONTHEWAY':
+                return (<Option key={status.value} value={status.value}>{t("ordersMenu.ontheway")}</Option>)
+            case 'DELIVERED':
+                return (<Option key={status.value} value={status.value}>{t("ordersMenu.delivered")}</Option>)
+        }
+    })
 
 
     const totalPrice = products.reduce((prevValue, currentValue) => {
@@ -256,6 +269,29 @@ const OrdersModal: React.FC<Props> = ({ updateData, t, productData, modalType, .
                         rules={[{ required: coords.length === 0, message: "Xatolik" }]}>
                         <Button block onClick={showDrawer}>{coords.length === 0 ? t('ordersMenu.map_point') : t("ordersMenu.edit_map_point")}<ArrowRightOutlined /></Button>
                     </Form.Item>
+                    {modalType === 'update' ?
+                        <Form.Item
+                            name="status"
+                            label={t("ordersMenu.order_status")}
+                        // rules={[
+                        //     { required: true, message: t("ordersMenu.select_product") },
+                        // ]}
+                        >
+                            <Select
+                                // labelInValue
+                                // mode='multiple'
+                                allowClear
+                                placeholder="Select status"
+                            // value={searchValue}
+                            // onSearch={onProductSearch}
+                            // filterOption={false}
+                            // notFoundContent={productSearch.isLoading ? <Spin size="small" /> : null}
+                            // onChange={onChangeSelect}
+                            >
+                                {statusOption}
+                            </Select>
+                        </Form.Item>
+                        : null}
                 </Form>
                 <MapDrawer
                     open={openMap}

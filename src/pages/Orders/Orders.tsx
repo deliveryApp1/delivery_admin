@@ -38,6 +38,7 @@ const Orders: React.FC = () => {
                 message.error(`Xatolik yuz berdi. Xatolik: ${err.message}`);
             });
     };
+    // console.log("orderQuery.data?.data: ", orderQuery.data?.data);
 
     const columns: ColumnsType<any> = [
         {
@@ -67,6 +68,50 @@ const Orders: React.FC = () => {
             key: "data",
             // width: "75%",
             render: (item, record) => item.location.address
+        },
+        {
+            title: t("ordersMenu.client"),
+            dataIndex: "user",
+            key: "user",
+            // width: "75%",
+            render: (item, record) => <>{t("usersMenu.username")}: <b>{item.username ? item.username : "-"}</b><br />{t("usersMenu.phone_number")}: <b>{item.phone}</b></>
+        },
+        {
+            title: t("ordersMenu.order_status"),
+            dataIndex: "status",
+            key: "status",
+            // width: "75%",
+            render: item => {
+                switch (item) {
+                    case 'PENDING':
+                        return t("ordersMenu.pending")
+                    case 'INPROGRESS':
+                        return t("ordersMenu.inprogress")
+                    case 'ONTHEWAY':
+                        return t("ordersMenu.ontheway")
+                    case 'DELIVERED':
+                        return t("ordersMenu.delivered")
+                }
+            },
+            filters: [
+                {
+                    text: t("ordersMenu.pending"),
+                    value: 'PENDING'
+                },
+                {
+                    text: t("ordersMenu.inprogress"),
+                    value: 'INPROGRESS'
+                },
+                {
+                    text: t("ordersMenu.ontheway"),
+                    value: 'ONTHEWAY'
+                },
+                {
+                    text: t("ordersMenu.delivered"),
+                    value: 'DELIVERED'
+                },
+            ],
+            onFilter: (value, record) => record.status.includes(value),
         },
         {
             title: t("actions"),

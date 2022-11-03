@@ -36,7 +36,13 @@
     "edit_map_point": "Изменить карту",
     "choosen": "Избранные",
     "product_type": "Тип продукта",
-    "total_sum": "Итого"
+    "total_sum": "Итого",
+    "client": "Клиент",
+    "order_status": "Статус заказа",
+    "pending": "Клиент ждет",
+    "inprogress": "Готовится к отправке",
+    "ontheway": "В пути",
+    "delivered": "Доставленный"
   },
   "time": "Время",
   "image": "Изображение",
