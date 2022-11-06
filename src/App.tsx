@@ -1,35 +1,26 @@
-import { lazy, Suspense } from "react";
-import { Layout } from "components";
+import { Fragment } from "react";
 import { Route, Routes } from "react-router-dom";
-import { LoadingOutlined } from '@ant-design/icons';
-import { Spin } from 'antd';
 import { NotFound } from "./components/ErrorHandling/NotFound";
 import "antd/dist/antd.css";
-const CategoryPage = lazy(() => import("pages/Category/Category"));
-const ProductPage = lazy(() => import('pages/Products/Product'))
-const HomePage = lazy(() => import('pages/Home'))
-const DiscountPage = lazy(() => import("pages/Discount/Discount"));
-const UsersPage = lazy(() => import("pages/Users/Users"));
-const OrdersPage = lazy(() => import('pages/Orders/Orders'))
-
-const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-
+import { MainLayout } from "./components";
+import { HomePage, InitialPage, Users, Orders, Discount, Category, Login, Products } from './pages'
+import RequireAuth from "components/RequireAuth/RequireAuth";
 
 function App() {
   return (
-    <Layout>
-      <Suspense fallback={<Spin indicator={antIcon} />}>
-        <Routes>
-          <Route index element={<HomePage />} />
-          <Route path="/category" element={<CategoryPage />} />
-          <Route path="/products" element={<ProductPage />} />
-          <Route path="/discount" element={<DiscountPage />} />
-          <Route path="/orders" element={<OrdersPage />} />
-          <Route path="/users" element={<UsersPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
-    </Layout>
+    <Routes>
+      <Route path="/clients" element={<InitialPage />} />
+      <Route path="/login" element={<Fragment><Login /></Fragment>} />
+      <Route path="/" element={<RequireAuth><MainLayout /></RequireAuth>} >
+        <Route index element={<RequireAuth><HomePage /></RequireAuth>} />
+        <Route path="category" element={<RequireAuth><Category /></RequireAuth>} />
+        <Route path="products" element={<RequireAuth><Products /></RequireAuth>} />
+        <Route path="discount" element={<RequireAuth><Discount /></RequireAuth>} />
+        <Route path="orders" element={<RequireAuth><Orders /></RequireAuth>} />
+        <Route path="users" element={<RequireAuth><Users /></RequireAuth>} />
+      </Route>
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
 

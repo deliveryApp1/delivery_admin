@@ -5,9 +5,10 @@ const { Sider } = AntdLayout;
 type Props = {
   collapsed: boolean;
   links: LinksType[];
+  location: any
 };
 
-const SideBar: React.FC<Props> = ({ collapsed, links }) => {
+const SideBar: React.FC<Props> = ({ collapsed, links, location }) => {
   return (
     <Sider
       style={{ paddingTop: "120px" }}
@@ -16,8 +17,13 @@ const SideBar: React.FC<Props> = ({ collapsed, links }) => {
       collapsed={collapsed}
       collapsedWidth="50"
     >
-      <Menu theme="dark" items={links}>
-      </Menu>
+      <Menu
+        theme="dark"
+        items={links}
+        defaultSelectedKeys={[location.pathname]}
+        selectedKeys={location.pathname}
+        onSelect={e => console.log("log clicked: ", e)}
+      />
     </Sider>
   );
 };

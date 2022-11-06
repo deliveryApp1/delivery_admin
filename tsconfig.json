@@ -28,6 +28,12 @@
       "components/*": ["components/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", "plopfile.ts", "src/i18next.js"],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "plopfile.ts",
+    "src/i18next.js",
+    "src/components/RequireAuth/RequireAuth.js"
+  ],
   "exclude": ["node_modules"]
 }

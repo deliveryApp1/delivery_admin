@@ -1,0 +1,50 @@
+.content_title {
+  font-size: 26px;
+  color: #383a3b;
+  text-align: center;
+  margin-top: 32px;
+  margin-bottom: 14px;
+  font-weight: 600;
+  letter-spacing: -1px;
+}
+.content_about {
+  font-size: 14px;
+  margin: 14px 10px 24px;
+  line-height: 1.5;
+  text-align: center;
+}
+.td_download_wrap,
+.td_download_wrap_low {
+  margin: 0 -130px;
+  width: 680px;
+  text-align: center;
+}
+.td_download_btn.td_tdirect {
+  border-radius: 5px;
+  font-weight: bold;
+  margin: 10px;
+}
+
+.td_download_btn {
+  display: inline-block;
+  vertical-align: top;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color: #fff;
+  border-color: #357ebd;
+  padding: 10px 14px;
+  min-width: 266px;
+  font-size: 15px;
+  line-height: 2;
+  border-radius: 30px;
+  background-color: #1d98dc;
+  margin: 5px 10px;
+}
