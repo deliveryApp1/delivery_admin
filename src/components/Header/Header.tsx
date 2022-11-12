@@ -1,7 +1,7 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
-import { MenuFoldOutlined, MenuUnfoldOutlined, CommentOutlined, GlobalOutlined, UserOutlined, SettingOutlined, LogoutOutlined } from "@ant-design/icons";
-import { Layout as AntdLayout, Space, Tooltip, Typography, Dropdown, Menu } from "antd";
+import { NavLink, useNavigate } from "react-router-dom";
+import { MenuFoldOutlined, MenuUnfoldOutlined, CommentOutlined, GlobalOutlined, UserOutlined, SettingOutlined, LogoutOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import { Layout as AntdLayout, Space, Tooltip, Typography, Dropdown, Menu, Modal } from "antd";
 import { useTranslation } from "react-i18next";
 import cookies from "js-cookie";
 import './Header.css'
@@ -14,11 +14,30 @@ type Props = {
   setCollapsed: (bool: boolean) => void;
 };
 
+const { confirm } = Modal;
+
 const Header: React.FC<Props> = ({ collapsed, setCollapsed }) => {
+  const navigate = useNavigate()
   const { t, i18n } = useTranslation();
   const currentLanguageCode = cookies.get("i18next") || "uz";
   const changeLanguage = (lng: string | undefined) => {
     i18n.changeLanguage(lng);
+  };
+
+  const warning = () => {
+    confirm({
+      icon: <ExclamationCircleOutlined />,
+      content: 'Are you sure, you want to leave?',
+      onOk() {
+        localStorage.removeItem('token')
+        localStorage.removeItem('isAuth')
+        localStorage.removeItem('user')
+        navigate('/clients', { replace: true })
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   };
 
   const languageMenu = (
@@ -68,7 +87,8 @@ const Header: React.FC<Props> = ({ collapsed, setCollapsed }) => {
           key: '3',
           label: 'Sign out',
           // onClick: handleLogout,
-          icon: <LogoutOutlined />
+          icon: <LogoutOutlined />,
+          onClick: warning
         },
       ]}
     />

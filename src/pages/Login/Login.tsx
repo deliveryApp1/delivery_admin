@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import type { RootState } from 'store/store';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { notification, Form, Input, Typography, Button, Layout } from "antd";
+import { notification, Form, Input, Typography, Button } from "antd";
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { login } from 'store/slices/authSlice';
 // import { useLoginMutation } from '../app/auth';
@@ -37,7 +36,7 @@ const Login: React.FC = () => {
             await form
                 .validateFields()
                 .then(values => {
-                    if (values.login === 'admin' && values.password === 'admin') {
+                    if (values.login === 'omadbek' && values.password === '937366669') {
                         dispatch(login(values))
                         navigate(from, { replace: true })
                         console.log("from: ", from);

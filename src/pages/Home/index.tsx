@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import { YMaps, Map, FullscreenControl, Placemark } from "react-yandex-maps";
+import { Spin } from 'antd'
 type Props = {}
 
 type Mapref = {
@@ -59,6 +60,7 @@ const HomePage: React.FC = (props: Props) => {
         }
         getAddress(coords);
     };
+    console.log("isMapReady: ", isMapReady);
     return (
         <YMaps>
             <Map
@@ -71,9 +73,13 @@ const HomePage: React.FC = (props: Props) => {
                     }
                 }}
                 modules={['geoObject.addon.balloon', "Placemark", "geocode", 'geoObject.addon.hint',
-                    'borders', 'ObjectManager', 'geoObject.addon.editor']}>
-                <FullscreenControl />
-                <Placemark geometry={coords} />
+                    'borders', 'ObjectManager', 'geoObject.addon.editor']}
+            >
+                {isMapReady ?
+                    <><FullscreenControl />
+                        <Placemark geometry={coords} /></>
+                    : <Spin />
+                }
             </Map>
         </YMaps>
     )
