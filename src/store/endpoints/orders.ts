@@ -7,12 +7,22 @@ export type GetOrderType = {
     meta: MetaDTO;
     statusCode: number
 };
-
+var token = localStorage.getItem("token")
 export const orderApi = createApi({
     refetchOnReconnect: true,
     reducerPath: `order`,
     baseQuery: fetchBaseQuery({
         baseUrl,
+        // prepareHeaders: (headers, { getState }) => {
+        //     let token = localStorage.getItem("token")
+        //     if (token) {
+        //         token = JSON.parse(token)
+        //         console.log('token: ', token);
+
+        //         headers.set("Authorization", `Bearer ${token}`);
+        //     }
+        //     return headers;
+        // },
     }),
     tagTypes: ["Order"],
 
@@ -21,6 +31,7 @@ export const orderApi = createApi({
         order: builder.query<any, { page?: number, pageSize?: number }>({
             query: (query) => ({
                 url: `/order`,
+                headers: { "Authorization": `Bearer ${token}` },
                 params: { page: query.page, pagesize: query.pageSize }
             }),
             providesTags: ["Order"],
@@ -31,6 +42,7 @@ export const orderApi = createApi({
         orderAdd: builder.mutation<GetOrderType, any>({
             query: (data) => ({
                 url: "/order",
+                headers: { "Authorization": `Bearer ${token}` },
                 method: "POST",
                 body: data,
             }),
@@ -43,6 +55,7 @@ export const orderApi = createApi({
         >({
             query: ({ id, value }) => ({
                 url: `/order/${id}`,
+                headers: { "Authorization": `Bearer ${token}` },
                 method: "PUT",
                 body: value,
             }),
@@ -52,6 +65,7 @@ export const orderApi = createApi({
         orderDelete: builder.mutation<GetOrderType, { id: number | undefined }>({
             query: ({ id }) => ({
                 url: `/order/${id}`,
+                headers: { "Authorization": `Bearer ${token}` },
                 method: 'DELETE',
             }),
             invalidatesTags: ["Order"],

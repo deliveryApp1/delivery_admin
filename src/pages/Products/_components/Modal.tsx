@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import React, { useState, useEffect } from 'react';
 import { updateProductStates } from "../../../store/slices/productSlice";
+import { baseUrl } from "constants/url";
 
 const { TextArea } = Input
 const { Option } = Select;
@@ -59,7 +60,7 @@ const ProductModal: React.FC<Props> = ({ updateData, t, categoryData, modalType,
     useEffect(() => {
         if (updateData && modalType === 'update') {
             console.log("updateData: ", updateData);
-            setImageUrl(`http://147.182.130.242:3000/${updateData?.image}`)
+            setImageUrl(`${baseUrl}${updateData?.image}`)
             form.setFieldsValue({
                 image: updateData?.image,
                 name: updateData?.name,
@@ -162,7 +163,7 @@ const ProductModal: React.FC<Props> = ({ updateData, t, categoryData, modalType,
                             listType="picture-card"
                             className="avatar-uploader"
                             showUploadList={false}
-                            action="http://147.182.130.242:3000/image-upload"
+                            action={`${baseUrl}image-upload`}
                             beforeUpload={beforeUpload}
                             onChange={handleChange}
                             maxCount={1}

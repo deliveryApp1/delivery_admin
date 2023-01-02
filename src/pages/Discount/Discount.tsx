@@ -7,6 +7,7 @@ import { updateDiscountStates } from "store/slices/discountSlice";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "store/rootHooks";
 import DiscountModal from "./_components/Modal";
+import { baseUrl } from "constants/url";
 
 
 const Discount: React.FC = () => {
@@ -21,9 +22,9 @@ const Discount: React.FC = () => {
 
   function onChange(page: number) {
     setPage(page);
-    
+
   }
-  
+
   console.log(discountQuery.data?.meta);
   const handleUpdate = (data: DiscountDTO) => {
     setUpdateData(data);
@@ -64,7 +65,7 @@ const Discount: React.FC = () => {
         return <Image
           width={30}
           height={30}
-          src={`http://147.182.130.242:3000/${record.image}`}
+          src={`${baseUrl}${record.image}`}
         />
       }
     },
@@ -160,7 +161,7 @@ const Discount: React.FC = () => {
           current: page,
           onChange: (e) => onChange(e),
           showSizeChanger: false,
-        }} 
+        }}
       />
 
       <DiscountModal updateData={updateData} modalType={modalType}  {...modalProps} />

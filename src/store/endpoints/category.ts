@@ -7,11 +7,22 @@ export type GetCategoryType = {
   meta: MetaDTO;
   statusCode: number
 };
+var token = localStorage.getItem("token")
 export const categoryApi = createApi({
   refetchOnReconnect: true,
   reducerPath: `category`,
   baseQuery: fetchBaseQuery({
     baseUrl,
+    // prepareHeaders: (headers, { getState }) => {
+    //   let token = localStorage.getItem("token")
+    //   if (token) {
+    //     token = JSON.parse(token)
+    //     console.log('token: ', token);
+
+    //     headers.set("Authorization", `Bearer ${token}`);
+    //   }
+    //   return headers;
+    // },
   }),
   tagTypes: ["Category"],
 
@@ -20,9 +31,10 @@ export const categoryApi = createApi({
     category: builder.query<any, { page?: number, pageSize?: number }>({
       query: (arg) => {
         const { page, pageSize } = arg
-        console.log('arg: ', arg)
+
         return {
           url: `/category`,
+          headers: { "Authorization": `Bearer ${token}` },
           params: { page, pagesize: pageSize }
         }
       },
@@ -34,6 +46,7 @@ export const categoryApi = createApi({
     categoryAdd: builder.mutation<GetCategoryType, { name: string }>({
       query: (data) => ({
         url: "/category",
+        headers: { "Authorization": `Bearer ${token}` },
         method: "POST",
         body: data,
       }),
@@ -47,6 +60,7 @@ export const categoryApi = createApi({
       query: ({ id, value }) => ({
         url: `/category/${id}`,
         method: "PUT",
+        headers: { "Authorization": `Bearer ${token}` },
         body: value,
       }),
       invalidatesTags: ["Category"],
@@ -55,6 +69,7 @@ export const categoryApi = createApi({
     categoryDelete: builder.mutation<GetCategoryType, { id: number | undefined }>({
       query: ({ id }) => ({
         url: `/category/${id}`,
+        headers: { "Authorization": `Bearer ${token}` },
         method: 'DELETE',
       }),
       invalidatesTags: ['Category'],

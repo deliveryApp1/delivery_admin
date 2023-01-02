@@ -67,6 +67,7 @@ const MapDrawer: React.FC<MapProps> = ({ open, setOpen, coords, setCoords, addre
         getAddress(coords);
     };
 
+
     return (
         <Drawer width='45%' style={{ padding: 0 }} title={`${t("ordersMenu.address")}: ${address}`} placement="right" onClose={onClose} open={open}>
             <Spin spinning={!isMapReady}>
@@ -85,7 +86,7 @@ const MapDrawer: React.FC<MapProps> = ({ open, setOpen, coords, setCoords, addre
                             modules={['geoObject.addon.balloon', "Placemark", "geocode", 'geoObject.addon.hint',
                                 'borders', 'ObjectManager', 'geoObject.addon.editor', 'control.ZoomControl', 'control.FullscreenControl']}>
                             {/* <FullscreenControl /> */}
-                            <Placemark options={{ draggable: true }} geometry={coords} />
+                            {coords.length && <Placemark options={{ draggable: true }} geometry={coords} />}
                             <GeolocationControl options={{
                                 float: 'left'
                             }} />

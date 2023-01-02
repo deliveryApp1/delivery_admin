@@ -7,12 +7,22 @@ export type GetProductType = {
     meta: MetaDTO;
     statusCode: number
 };
-
+var token = localStorage.getItem("token")
 export const productApi = createApi({
     refetchOnReconnect: true,
     reducerPath: `product`,
     baseQuery: fetchBaseQuery({
         baseUrl,
+        // prepareHeaders: (headers, { getState }) => {
+        //     let token = localStorage.getItem("token")
+        //     if (token) {
+        //         token = JSON.parse(token)
+        //         console.log('token: ', token);
+
+        //         headers.set("Authorization", `Bearer ${token}`);
+        //     }
+        //     return headers;
+        // },
     }),
     tagTypes: ["Product"],
 
@@ -21,6 +31,7 @@ export const productApi = createApi({
         product: builder.query<any, { page?: number, pageSize?: number }>({
             query: (query) => ({
                 url: `/product`,
+                headers: { "Authorization": `Bearer ${token}` },
                 params: { page: query.page, pagesize: query.pageSize }
             }),
             providesTags: ["Product"],
@@ -31,6 +42,7 @@ export const productApi = createApi({
         productAdd: builder.mutation<GetProductType, { name: string }>({
             query: (data) => ({
                 url: "/product",
+                headers: { "Authorization": `Bearer ${token}` },
                 method: "POST",
                 body: data,
             }),
@@ -43,6 +55,7 @@ export const productApi = createApi({
         >({
             query: ({ id, value }) => ({
                 url: `/product/${id}`,
+                headers: { "Authorization": `Bearer ${token}` },
                 method: "PUT",
                 body: value,
             }),
@@ -52,6 +65,7 @@ export const productApi = createApi({
         productDelete: builder.mutation<GetProductType, { id: number | undefined }>({
             query: ({ id }) => ({
                 url: `/product/${id}`,
+                headers: { "Authorization": `Bearer ${token}` },
                 method: 'DELETE',
             }),
             invalidatesTags: ["Product"],

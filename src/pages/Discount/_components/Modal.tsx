@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { updateDiscountStates } from "store/slices/discountSlice";
 import { DiscountDTO } from "types/discountTypes";
 import { useAppDispatch } from "store/rootHooks";
+import { baseUrl } from "constants/url";
 
 
 type Props = ModalProps & {
@@ -51,7 +52,7 @@ const DiscountModal: React.FC<Props> = ({ updateData, modalType, ...modalProps }
                 const formData = { ...data, image: responseImageUrl }
                 if (modalType === 'update') {
                     data.image = responseImageUrl
-                    const dicountPromise =  discountUpdateMutation ({
+                    const dicountPromise = discountUpdateMutation({
                         id: updateData?.id,
                         value: formData,
                     }).unwrap();
@@ -68,7 +69,7 @@ const DiscountModal: React.FC<Props> = ({ updateData, modalType, ...modalProps }
                             message.error(`Xatolik yuz berdi. Xatolik: ${err.message}`);
                         });
                 } else if (modalType === 'create') {
-                    const dicountPromise =  discountAddMutation(formData).unwrap();
+                    const dicountPromise = discountAddMutation(formData).unwrap();
                     dicountPromise
                         .then((res) => {
                             if (res.statusCode === 200) {
@@ -104,7 +105,7 @@ const DiscountModal: React.FC<Props> = ({ updateData, modalType, ...modalProps }
 
     useEffect(() => {
         if (updateData && modalType === 'update') {
-            setImageUrl(`http://147.182.130.242:3000/${updateData?.image}`)
+            setImageUrl(`${baseUrl}${updateData?.image}`)
             form.setFieldsValue({
                 image: updateData?.image,
                 description: updateData?.description,
@@ -145,7 +146,7 @@ const DiscountModal: React.FC<Props> = ({ updateData, modalType, ...modalProps }
                             listType="picture-card"
                             className="avatar-uploader"
                             showUploadList={false}
-                            action="http://147.182.130.242:3000/image-upload"
+                            action={`${baseUrl}image-upload`}
                             beforeUpload={beforeUpload}
                             onChange={handleChange}
                             maxCount={1}

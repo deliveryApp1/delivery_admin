@@ -7,11 +7,22 @@ export type GetUsersType = {
     meta: MetaDTO;
     statusCode: number
 };
+var token = localStorage.getItem("token")
 export const usersApi = createApi({
     refetchOnReconnect: true,
     reducerPath: `users`,
     baseQuery: fetchBaseQuery({
         baseUrl,
+        // prepareHeaders: (headers, { getState }) => {
+        //     let token = localStorage.getItem("token")
+        //     if (token) {
+        //         token = JSON.parse(token)
+        //         console.log('token: ', token);
+
+        //         headers.set("Authorization", `Bearer ${token}`);
+        //     }
+        //     return headers;
+        // },
     }),
     tagTypes: ["Users"],
 
@@ -20,6 +31,7 @@ export const usersApi = createApi({
         users: builder.query<any, { page?: number, pageSize?: number }>({
             query: (query) => ({
                 url: "/user",
+                headers: { "Authorization": `Bearer ${token}` },
                 params: { page: query.page, pagesize: query.pageSize }
             }),
             providesTags: ["Users"],
@@ -31,6 +43,7 @@ export const usersApi = createApi({
             query: (data) => ({
                 url: "/user",
                 method: "POST",
+                headers: { "Authorization": `Bearer ${token}` },
                 body: data,
             }),
             invalidatesTags: ["Users"],
@@ -43,6 +56,7 @@ export const usersApi = createApi({
             query: ({ id, value }) => ({
                 url: `/user/${id}`,
                 method: "PUT",
+                headers: { "Authorization": `Bearer ${token}` },
                 body: value,
             }),
             invalidatesTags: ["Users"],
@@ -51,6 +65,7 @@ export const usersApi = createApi({
         usersDelete: builder.mutation<GetUsersType, { id: number | undefined }>({
             query: ({ id }) => ({
                 url: `/user/${id}`,
+                headers: { "Authorization": `Bearer ${token}` },
                 method: 'DELETE',
             }),
             invalidatesTags: ["Users"],

@@ -5,13 +5,25 @@ import { baseUrl } from "constants/url";
 export type GetDiscountType = {
   data: DiscountDTO[];
   statusCode: number,
-  meta: {page: number, total: number, pagesize: number}
+  meta: { page: number, total: number, pagesize: number }
 };
+
+var token = localStorage.getItem("token")
 export const discountApi = createApi({
   refetchOnReconnect: true,
   reducerPath: `discount`,
   baseQuery: fetchBaseQuery({
     baseUrl,
+    // prepareHeaders: (headers, { getState }) => {
+    //   let token = localStorage.getItem("token")
+    //   if (token) {
+    //     token = JSON.parse(token)
+    //     console.log('token: ', token);
+
+    //     headers.set("Authorization", `Bearer ${token}`);
+    //   }
+    //   return headers;
+    // },
   }),
   tagTypes: ["Discount"],
 
@@ -20,7 +32,8 @@ export const discountApi = createApi({
     discount: builder.query<GetDiscountType, { page?: number; pagesize?: number; } | void>({
       query: (queries) => ({
         url: "/discount",
-        params: { ...queries }
+        params: { ...queries },
+        headers: { "Authorization": `Bearer ${token}` },
       }),
       providesTags: ["Discount"],
     }),
@@ -31,6 +44,7 @@ export const discountApi = createApi({
       query: (data) => ({
         url: "/discount",
         method: "POST",
+        headers: { "Authorization": `Bearer ${token}` },
         body: data,
       }),
       invalidatesTags: ["Discount"],
@@ -39,11 +53,12 @@ export const discountApi = createApi({
 
     discountUpdate: builder.mutation<
       GetDiscountType,
-      { id: number | undefined; value:{title:string , image: string, description: string}  }
+      { id: number | undefined; value: { title: string, image: string, description: string } }
     >({
       query: ({ id, value }) => ({
         url: `/discount/${id}`,
         method: "PUT",
+        headers: { "Authorization": `Bearer ${token}` },
         body: value,
       }),
       invalidatesTags: ["Discount"],
@@ -52,6 +67,7 @@ export const discountApi = createApi({
     discountDelete: builder.mutation<GetDiscountType, { id: number | undefined }>({
       query: ({ id }) => ({
         url: `/discount/${id}`,
+        headers: { "Authorization": `Bearer ${token}` },
         method: 'DELETE',
       }),
       invalidatesTags: ['Discount'],
